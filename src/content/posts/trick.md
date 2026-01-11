@@ -1,12 +1,12 @@
 ---
 title: trick
 published: 2026-01-10
-description: ''
+description: '做题中需要记的一些东西'
 image: ''
-tags: []
-category: ''
+tags: [OI]
+category: 'OI'
 draft: false 
-lang: ''
+lang: 'zh_CN'
 ---
 # 常用 ACM 算法竞赛笔记与模板（整理版）
 ---

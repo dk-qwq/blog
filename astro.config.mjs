@@ -56,7 +56,10 @@ export default defineConfig({
 			},
 		}),
 		expressiveCode({
-			themes: [expressiveCodeConfig.theme, expressiveCodeConfig.theme],
+			// 原主题配置，注释保留以便恢复：
+			// themes: [expressiveCodeConfig.theme, expressiveCodeConfig.theme],
+			// 使用 VSCode Default Dark Modern 近似主题：Dark+（Shiki 内置，可稳定加载）
+			themes: ["dark-plus"],
 			plugins: [
 				pluginCollapsibleSections(),
 				pluginLineNumbers(),
@@ -72,27 +75,28 @@ export default defineConfig({
 				},
 			},
 			styleOverrides: {
-				codeBackground: "var(--codeblock-bg)",
-				borderRadius: "0.75rem",
+				// 采用 VSCode Default Dark Modern（近似 Dark+）的配色与风格
+				codeBackground: "#1E1E1E",
+				borderRadius: "0.5rem",
 				borderColor: "none",
 				codeFontSize: "0.875rem",
-				codeFontFamily: "'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+				codeFontFamily: "'JetBrains Mono Variable', Menlo, Monaco, Consolas, 'Courier New', ui-monospace, monospace",
 				codeLineHeight: "1.5rem",
 				frames: {
-					editorBackground: "var(--codeblock-bg)",
-					terminalBackground: "var(--codeblock-bg)",
-					terminalTitlebarBackground: "var(--codeblock-topbar-bg)",
-					editorTabBarBackground: "var(--codeblock-topbar-bg)",
-					editorActiveTabBackground: "none",
-					editorActiveTabIndicatorBottomColor: "var(--primary)",
+					editorBackground: "#1E1E1E",
+					terminalBackground: "#1E1E1E",
+					terminalTitlebarBackground: "#2D2D2D",
+					editorTabBarBackground: "#2D2D2D",
+					editorActiveTabBackground: "#1E1E1E",
+					editorActiveTabIndicatorBottomColor: "#007ACC",
 					editorActiveTabIndicatorTopColor: "none",
-					editorTabBarBorderBottomColor: "var(--codeblock-topbar-bg)",
+					editorTabBarBorderBottomColor: "#2D2D2D",
 					terminalTitlebarBorderBottomColor: "none"
 				},
 				textMarkers: {
 					delHue: 0,
-					insHue: 180,
-					markHue: 250
+					insHue: 120,
+					markHue: 60
 				}
 			},
 			frames: {

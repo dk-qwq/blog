@@ -3,6 +3,8 @@ import type { MarkdownHeading } from "astro";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
 import Tag from "./Tags.astro";
+import { profileConfig } from "../../config";
+import ImageWrapper from "../misc/ImageWrapper.astro";
 
 interface Props {
 	class?: string;
@@ -10,11 +12,23 @@ interface Props {
 }
 
 const className = Astro.props.class;
+const config = profileConfig;
 ---
 <div id="sidebar" class:list={[className, "w-full"]}>
     <div class="flex flex-col w-full gap-4 mb-4">
         <Profile></Profile>
     </div>
+
+    {config.badgeGif && (
+        <div class="card-base p-3 onload-animation mb-4" style="animation-delay: 100ms">
+            <ImageWrapper 
+                src={config.badgeGif} 
+                alt="Badge GIF" 
+                class="w-full rounded-lg"
+            />
+        </div>
+    )}
+
     <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4">
         <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
         <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
