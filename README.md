@@ -1,5 +1,11 @@
 [**🖥️ My Blog**](https://dk-qwq.github.io/blog/)
 
+创建一篇新文章
+`pnpm new-post my-first-post`
+本地预览
+`pnpm dev`
+
+
 以下为原项目内容：
 
 # 🍥Fuwari  
