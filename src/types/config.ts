@@ -65,7 +65,7 @@ export type ProfileConfig = {
 	name: string;
 	bio?: string;
 	badgeGif?: string;
-	
+
 	links: {
 		name: string;
 		url: string;

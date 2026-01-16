@@ -1,24 +1,21 @@
 ---
 import ArchivePanel from "@components/ArchivePanel.svelte";
-import type { Post } from "@/types/post";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import type { Post } from "@/types/post";
 import { getSortedPostsList } from "../utils/content-utils";
 
-const sortedPostsList: Post[] = 
-    (await getSortedPostsList()).map(post => ({
-        slug: post.slug,
-        data: {
-            title: post.data.title,
-            tags: post.data.tags,
-            category: 
-                typeof post.data.category === "string"
-                    ? post.data.category
-                    : undefined,
-            published: post.data.published,
-        },
-    }));
+const sortedPostsList: Post[] = (await getSortedPostsList()).map((post) => ({
+	slug: post.slug,
+	data: {
+		title: post.data.title,
+		tags: post.data.tags,
+		category:
+			typeof post.data.category === "string" ? post.data.category : undefined,
+		published: post.data.published,
+	},
+}));
 ---
 
 <MainGridLayout title={i18n(I18nKey.archive)}>

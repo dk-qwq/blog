@@ -1,10 +1,10 @@
 ---
 import type { MarkdownHeading } from "astro";
+import { profileConfig } from "../../config";
+import ImageWrapper from "../misc/ImageWrapper.astro";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
 import Tag from "./Tags.astro";
-import { profileConfig } from "../../config";
-import ImageWrapper from "../misc/ImageWrapper.astro";
 
 interface Props {
 	class?: string;
