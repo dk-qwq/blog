@@ -2,6 +2,7 @@
 
 创建一篇新文章
 `pnpm new-post my-first-post`
+
 本地预览
 `pnpm dev`
 

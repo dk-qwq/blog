@@ -72,6 +72,7 @@ export default defineConfig({
 						showLineNumbers: false,
 					},
 				},
+				collapseStyle: "collapsible-start",
 			},
 			styleOverrides: {
 				// 采用 VSCode Default Dark Modern（近似 Dark+）的配色与风格
