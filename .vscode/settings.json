@@ -22,7 +22,11 @@
 		"editor.lineHeight": 26,
 		"editor.wordWrap": "wordWrapColumn",
 		"editor.wordWrapColumn": 64,
-		"editor.lineNumbers": "off",
-		"editor.quickSuggestions": false
+		"editor.lineNumbers": "on",
+		"editor.quickSuggestions": {
+			"comments": "off",
+			"strings": "off",
+			"other": "off"
+		}
 	}
 }
