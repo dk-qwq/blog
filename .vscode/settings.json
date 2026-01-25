@@ -28,5 +28,9 @@
 			"strings": "off",
 			"other": "off"
 		}
-	}
+	},
+	"markdown.extension.toc.updateOnSave": false,
+	"markdown.extension.completion.enabled": true,
+	"markdown.extension.orderedList.autoRenumber": false,
+	"markdown.extension.print.absoluteImgPath": false
 }

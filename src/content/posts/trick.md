@@ -8,8 +8,11 @@ category: 'OI'
 draft: false 
 lang: 'zh_CN'
 ---
+
 # 常用 ACM 算法竞赛笔记与模板（整理版）
+
 ---
+
 ## 目录
 
 - [环境与 IO](#环境与-io)
@@ -19,8 +22,7 @@ lang: 'zh_CN'
   - [Template](#template)
   - [快读](#快读)
 
-- [随机 生成 校验工具](#随机--生成--校验工具)
-  - [Python 生成与校验](#python生成与校验)
+- [Python 随机 / 生成 / 校验工具](#python-随机--生成--校验工具)
 
 - [数据结构 DSU BIT multiset fenwick](#数据结构-dsu--bit--multiset--fenwick)
   - [差分与前缀和技巧](#差分与前缀和技巧)
@@ -38,14 +40,16 @@ lang: 'zh_CN'
   - [k平方模3性质](#性质)
   - [计数某一位为1的快速方法](#计数某一位为-1-的快速方法-计算区间)   
 
-- [距离变换 曼哈顿 切比雪夫](#距离变换曼哈顿与切比雪夫常用技巧)
+- [平面](#平面)
+  - [极坐标排序](#极坐标排序)
+  - [距离变换：曼哈顿与切比雪夫](#距离变换曼哈顿与切比雪夫)
 
 - [哈希与模数表](#哈希与模数表)
 
 - [C++20 ranges / STL / 小技巧](#c20-ranges--stl--小技巧)
+  - [Lambda 递归](#lambda-递归)
   - [:: 全局作用域运算符](#-全局作用域运算符)
   - [内存占用估算技巧](#内存占用估算技巧)
-  - [Python 技巧](#python-技巧)
   - [views](#views)
   - [平板电视（pbds）](#平板电视pbds)
     - [动态第 $k$ 小](#动态第-k-小)
@@ -58,7 +62,6 @@ lang: 'zh_CN'
 
 - [代码片段速查](#代码片段速查零散但常用)
   - [C++ 随机数](#c-随机数可复现--不可复现)
-  - [pair 哈希](#pair-哈希)
   - [清空容器](#清空容器swap-trick)
 
 - [实用命令](#实用命令)
@@ -68,8 +71,6 @@ lang: 'zh_CN'
 
 - [返回目录](#返回目录)
 
-
-
 ---
 
 # 环境与 IO
@@ -78,9 +79,14 @@ lang: 'zh_CN'
 
 #### 说明
 
-* PowerShell **不支持** `<` 作为 stdin 重定向（与 CMD 不同）。
+- PowerShell **不支持** `<` 作为 stdin 重定向（与 CMD 不同）。
 
 #### 示例
+
+```bash
+# python os.system / powershell / bash
+type A.in | std.exe > A.ans
+```
 
 ```powershell
 # PowerShell — 方式 1：使用管道
@@ -157,82 +163,74 @@ int main(){
 
 ---
 
-# 随机 / 生成 / 校验工具
-
-### Python：生成与校验
+# Python 随机 / 生成 / 校验工具
 
 ```python
-# check.py: 用于检查输出是否满足某些序列条件（示例）
-inFile = open("A.in", "r")
-outFile = open("A.out", "r")
+# 对拍板子
+import os
 
-n = int(inFile.readline())
-a = [0] * n
-b = [0] * n
-for i in range(0, n):
-    a[i], b[i] = map(int, inFile.readline().split())
+os.system("g++ -std=c++23 std.cpp -o std.exe")
+os.system("g++ -std=c++23 A.cpp -o A.exe")
 
-ans = int(outFile.readline())
+kase = 0
+while True:
+  os.system("python gen.py > A.in")
+  os.system("type A.in | std.exe > A.ans")
+  os.system("type A.in | A.exe > A.out")
+  if os.system("fc A.ans A.out > nul") != 0:
+    print("Wrong Answer on Case:", kase)
+    break
 
-last = [0] * n
-group = list(map(int, outFile.readline().split()))
+  if kase % 100 == 0:
+    print(kase, "pass !!!")
 
-flag = False
-for i in range(0, n):
-    w = group[i]
-    if last[w] > b[i]:
-        open("A.ans", "w").write("False")
-        flag = True
-        break
-    last[w] = b[i]
-
-if flag == False:
-    open("A.ans", "w").write("True")
+  kase = kase + 1
 ```
+
+python中可以直接使用 `pow(x, k)` / `pow(x, k, mod)` ，不需要导入任何库
 
 ```python
 # 简单数据生成器
 import random
 
-def gen(n, m):
-    print(n, m)
-    for _ in range(n):
-        print(random.randint(1, 1000), end=' ')
-    print()
-
-if __name__ == "__main__":
-    gen(10, 5)
+random.randint(l, r)
+random.choice(list)    # 随机选一个
+random.sample(list, k) # 随机不重复选k个
+random.shuffle(list)
 ```
 
 ```python
-import random
+# 全排列
+import itertools
+def generate_permutations(n):
+  return itertools.permutations(range(1, n + 1))
 
-random.randint(l, r)
-random.choice(list)
-random.sample(list, k)
-random.shuffle(list)
-
-# f = open("data.in", "w")
-with open("data.in", "w") as f:
-    f.write("...\n")
-    print("...", file = f)
-# f.close()
+for p in generate_permutations(n):
+  v = list(p)
+  if check(v):
+    print(' '.join(map(str, p)))
 ```
+
 ---
 
 # 数据结构 DSU / BIT / multiset / fenwick
 
 ## 差分与前缀和技巧
+
 ### 区间覆盖次数最大值
+
 给定若干区间 ([l, r])，只需计算**某点被覆盖的最大次数**（不关心具体点）。
-* 对每个区间：
-  * `c[l]++` ， `c[r + 1]--`
-* 对 `c` 求前缀和，维护最大值即可
+
+- 对每个区间：
+  - `c[l]++` ， `c[r + 1]--`
+- 对 `c` 求前缀和，维护最大值即可
 
 **说明：**
-* 若坐标范围小，用数组
-* 若坐标范围大 / 稀疏，用 `map`
-* 不同区间权值不同，直接把 `++ / --` 改为对应权值
+
+- 若坐标范围小，用数组
+- 若坐标范围大 / 稀疏，用 `map`
+- 不同区间权值不同，直接把 `++ / --` 改为对应权值
+
 ```cpp
 map<ll, ll> c;
 for (auto [l, r] : intervals)
@@ -304,16 +302,16 @@ struct fenwick{ // 二维树状数组
 
 ## multiset 常见用法与效率提示
 
-* 查找某值：`s.find(val)` — 推荐用于判断存在性（**不要**用 `count` 在 multiset 上查元素的存在性：`multiset::count()` 的复杂度为 `O(k + log n)`，其中 `k` 为该值出现的次数）。
-* 删除：
+- 查找某值：`s.find(val)` — 推荐用于判断存在性（**不要**用 `count` 在 multiset 上查元素的存在性：`multiset::count()` 的复杂度为 `O(k + log n)`，其中 `k` 为该值出现的次数）。
+- 删除：
 
-  * `s.erase(val)` 删除所有等值元素（C++11 以后返回删除个数）
-  * `s.erase(it)` 删除迭代器
-  * `s.erase(s.find(val))` 删除单个点
-* 最小/最大：
+  - `s.erase(val)` 删除所有等值元素（C++11 以后返回删除个数）
+  - `s.erase(it)` 删除迭代器
+  - `s.erase(s.find(val))` 删除单个点
+- 最小/最大：
 
-  * `*s.begin()` 最小值
-  * `*prev(s.end())` 最大值
+  - `*s.begin()` 最小值
+  - `*prev(s.end())` 最大值
 
 ---
 
@@ -328,10 +326,9 @@ struct fenwick{ // 二维树状数组
 然后，任选一条从 $1$ 到 $n$ 的简单路径，将路径上的边的集合记作 $P$。
 那么：$ B \cap P = A$
 
-
 > 对图 $G=(V,E)$，若 $T=(V,E')$ 是 $G$ 的一棵最小生成树，加入若干新点 $V_{new}$ 并连接若干边后，新图 $G'=(V\cup V_{new}, E\cup E_{new})$ 的最小生成树中，**不会使用原图中不在 $T$ 中的边**。
 >
-> 即：$E_{T'} \cap (E \setminus E') = \empty$。 
+> 即：$E_{T'} \cap (E \setminus E') = \empty$。
 >
 > 结论（简洁）：也就是说加入新点可在原最小生成树上做
 
@@ -343,10 +340,10 @@ struct fenwick{ // 二维树状数组
 
 > 结论：
 >
-> * 若 $n \bmod 4 = 0$，则 $1 \oplus \dots \oplus n = n$。
-> * 若 $n \bmod 4 = 1$，则 $1 \oplus \dots \oplus n = 1$。
-> * 若 $n \bmod 4 = 2$，则 $1 \oplus \dots \oplus n = n+1$。
-> * 若 $n \bmod 4 = 3$，则 $1 \oplus \dots \oplus n = 0$。 
+> - 若 $n \bmod 4 = 0$，则 $1 \oplus \dots \oplus n = n$。
+> - 若 $n \bmod 4 = 1$，则 $1 \oplus \dots \oplus n = 1$。
+> - 若 $n \bmod 4 = 2$，则 $1 \oplus \dots \oplus n = n+1$。
+> - 若 $n \bmod 4 = 3$，则 $1 \oplus \dots \oplus n = 0$。
 
 ## $k^2 \bmod 3$ 性质
 
@@ -373,16 +370,51 @@ def query_range(l, r, k):
 
 ---
 
-# 距离变换：曼哈顿与切比雪夫（常用技巧）
+# 平面
 
-* 曼哈顿距离：$dis(A, B) = |x_1 - x_2| + |y_1 - y_2|$
-* 切比雪夫距离：$dis(A, B) = \max(|x_1 - x_2|, |y_1 - y_2|)$
+## 极坐标排序
+
+给定一组坐标点，可以通过极坐标的角度（theta）对其进行排序。首先，定义一个 `getPos` 函数，返回每个点在四个象限中的位置，用于决定排序时的优先级：
+
+```cpp
+int getPos(array<int, 2> p) {
+    auto [x, y] = p;
+    if (x == 0 && y == 0) return -1;       // 原点
+    if (x >= 0 && y > 0) return 1;          // 第一象限
+    if (x > 0 && y <= 0) return 2;          // 第二象限
+    if (x <= 0 && y < 0) return 3;          // 第三象限
+    if (x < 0 && y >= 0) return 4;          // 第四象限
+    assert(false);
+    return 0;
+}
+```
+
+```cpp
+sort(a + 1, a + 1 + n, [](array<int, 2>& A, array<int, 2>& B){
+    int pA = getPos(A);
+    int pB = getPos(B);
+
+    if (pA != pB) return pA < pB;  // 先按照象限排序
+
+    ll res = 1ll * A[0] * B[1] - 1ll * B[0] * A[1];
+    return res < 0;  // 判断同象限点的顺逆时针
+});
+```
+
+> 控制排序方向
+> 1. 修改 `getPos` 中的边界情况来调整原点或特殊情况的处理。
+> 2. 通过 `res < 0` 可以控制顺时针或逆时针的排序，修改为 `res > 0` 则为逆时针。
+
+## 距离变换：曼哈顿与切比雪夫
+
+- 曼哈顿距离：$dis(A, B) = |x_1 - x_2| + |y_1 - y_2|$
+- 切比雪夫距离：$dis(A, B) = \max(|x_1 - x_2|, |y_1 - y_2|)$
 
 > 转换技巧：
 >
-> * 将 $(x,y) \mapsto (x+y, x-y)$，则原坐标系中的 **曼哈顿距离** 等于新坐标系中的 **切比雪夫距离**。
+> - 将 $(x,y) \mapsto (x+y, x-y)$，则原坐标系中的 **曼哈顿距离** 等于新坐标系中的 **切比雪夫距离**。
 >
->* 将 $(x,y) \mapsto \left(\dfrac{x+y}{2},\dfrac{x-y}{2}\right)$，则原坐标系中的 **切比雪夫距离** 等于新坐标系中的 **曼哈顿距离**。 
+>- 将 $(x,y) \mapsto \left(\dfrac{x+y}{2},\dfrac{x-y}{2}\right)$，则原坐标系中的 **切比雪夫距离** 等于新坐标系中的 **曼哈顿距离**。
 
 ---
 
@@ -401,17 +433,33 @@ def query_range(l, r, k):
 
 # C++20 ranges / STL / 小技巧
 
+## Lambda 递归
+
+### 写法一：`auto self`
+```cpp
+auto dfs = [&](auto self, int u) -> void {
+    for (int v : adj[u]) self(self, v);
+};
+dfs(dfs, root);
+````
+
+### 写法二：`std::function`
+
+```cpp
+function<void(int)> dfs = [&](int u) {
+    for (int v : adj[u]) dfs(v);
+};
+dfs(root);
+```
+
 ## :: 全局作用域运算符
+
 - 使用 `::x` 显式访问全局变量，避免与局部变量 / 形参重名
 - 例：`dfs(u, fa)` 中用 `::fa[u] = fa`
 
-
 ## 内存占用估算技巧
+
 计算空间，所有变量定义之前`bool Be;` 之后`bool Ed;`， 然后输出：`cout << ((&Ed - &Be) >> 20) << endl;` 就是使用变量的总空间，单位为 MB （可能cout的时候需要调换Be，Ed的位置，原因：大端小端）
-
-## Python 技巧
-
-python中可以直接使用 `pow(x, k, mod)` ，不需要导入任何库
 
 ## views
 
@@ -422,8 +470,8 @@ auto p = std::ranges::partition_point(v, odd);
 std::cout << *p << '\n';
 ```
 
-* `iota_view(0, 10^9)` 是虚拟范围，**O(1)** 表示无需构造实际容器，适合用于二分答案。
-* `partition_point` 要求 `check` 在范围内单调（先 `true` 后 `false`），必要时反转返回值。 
+- `iota_view(0, 10^9)` 是虚拟范围，**O(1)** 表示无需构造实际容器，适合用于二分答案。
+- `partition_point` 要求 `check` 在范围内单调（先 `true` 后 `false`），必要时反转返回值。
 
 ```cpp
 std::map<int, std::string> mp = {{1, "a"}, {2, "b"}, {3, "c"}}; // 反向迭代map
@@ -433,7 +481,9 @@ for (auto&& [k, v] : mp | rv::all | rv::reverse)
 ```
 
 ## 平板电视（pbds）
+
 ### 动态第 $k$ 小
+
 ```cpp
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -458,7 +508,7 @@ os.order_of_key(x);         // < x 的元素个数
 bool next_permutation(iterator start, iterator end);
 ```
 
-* 复杂度：**`O(n)`**（单次）
+- 复杂度：**`O(n)`**（单次）
 
 ## 常用 debug 宏
 
@@ -477,20 +527,21 @@ struct PairHash {
 std::unordered_map<std::pair<int, int>, ll, PairHash> count;
 ```
 
-> ⚠️ 注意：自实现 hashmap 在性能上可能不如嵌套 `std::unordered_map<int, std::unordered_map<int, ll>>`，后者在很多场景更稳定。 
+> ⚠️ 注意：自实现 hashmap 在性能上可能不如嵌套 `std::unordered_map<int, std::unordered_map<int, ll>>`，后者在很多场景更稳定。
 
 ---
 
 # 常见数学结论（快查）
 
-* $\sum_{X} f(X) = \sum_{k} \sum_{X} [f(X) > k]$
-* 对于大小为 $n \times m$ 的方格，若 $n/m$ 为奇数，则可以从 $(1, 1)$ 到 $(n, m)$ 一次性走完所有方格（ $S$ 型）
-* 素数计数函数：$\pi(n) \sim \dfrac{n}{\ln n}$。 
-* 多边形成立条件（给定边长能否构成多边形）：
+- $\sum_{X} f(X) = \sum_{k} \sum_{X} [f(X) > k]$
+- 对于大小为 $n \times m$ 的方格，若 $n/m$ 为奇数，则可以从 $(1, 1)$ 到 $(n, m)$ 一次性走完所有方格（ $S$ 型）
+- 素数计数函数：$\pi(n) \sim \dfrac{n}{\ln n}$。
+- 多边形成立条件（给定边长能否构成多边形）：
 
-  > 若有 $m \ge 3$ 根边长 $l_1,\dots,l_m$，当且仅当 $\sum_{i=1}^{m} l_i > 2\max_i l_i$。 
+  > 若有 $m \ge 3$ 根边长 $l_1,\dots,l_m$，当且仅当 $\sum_{i=1}^{m} l_i > 2\max_i l_i$。
 
 ## 偏序与线性扩展（排序 / LIS 技巧）
+
 对直积偏序 $< \times <$ ，可通过“主序升序、次序逆序”的线性扩展消除等值冲突。
 
 ---
@@ -515,16 +566,6 @@ uniform_int_distribution<int> dist(1, 6); // [1,6] 区间
 cout << dist(gen) << endl;  // 模拟掷骰子
 ```
 
-### pair 哈希
-
-```cpp
-struct PairHash {
-    size_t operator()(const std::pair<int,int>& p) const noexcept {
-        return std::hash<long long>()(((long long)p.first << 32) ^ p.second);
-    }
-};
-```
-
 ### 清空容器（swap trick）
 
 ```cpp
@@ -537,19 +578,21 @@ void clear(T& v){ T().swap(v); }
 # 实用命令
 
 ## 测时
-PowerShell：`Measure-Command {A.exe}` 测程序运行时间（PowerShell 专用）。 
+
+PowerShell：`Measure-Command {A.exe}` 测程序运行时间（PowerShell 专用）。
 
 ---
 
 # 返回目录
 
-* [回到顶部](#常用-acm-算法竞赛笔记与模板整理版)
+- [回到顶部](#常用-acm-算法竞赛笔记与模板整理版)
 
 ---
 
 # AI持续维护Prompt
 
 ### 零碎知识点整理
+
 ```text
 你是 ACM 算法竞赛 Markdown 笔记整理助手。
 我会输入一些零碎、口语化、不成体系的知识点。
@@ -606,4 +649,4 @@ PowerShell：`Measure-Command {A.exe}` 测程序运行时间（PowerShell 专用
 
 # 返回目录
 
-* [回到顶部](#常用-acm-算法竞赛笔记与模板整理版)
+- [回到顶部](#常用-acm-算法竞赛笔记与模板整理版)

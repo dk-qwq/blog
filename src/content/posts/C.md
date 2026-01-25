@@ -30,6 +30,10 @@ void* realloc(void* ptr,size_t new_size);
 // 把一块原有的空间重新分配为 size 大小
 ```
 
+## std::string_view 字符串视图
+
+性能优于 `const string&`
+
 ## 神秘宏
 
 ```cpp
@@ -44,6 +48,30 @@ __func__ / __FUNCTION__
 
 __DATE__ (日期)
 __TIME__ (时间 hh:mm:ss形式)
+```
+
+## std::source_location 输出有关源代码的特定信息
+
+```cpp
+#include <iostream>
+#include <source_location>
+#include <string_view>
+ 
+void log(const std::string_view message,
+         const std::source_location location =
+               std::source_location::current())
+{
+    std::clog << "file: "
+              << location.file_name() << '('
+              << location.line() << ':'
+              << location.column() << ") `"
+              << location.function_name() << "`: "
+              << message << '\n';
+}
+ 
+int main() {
+    log("Hello world!"); // line 25
+}
 ```
 
 ## C 原生可变数量参数
