@@ -36,7 +36,8 @@ lang: 'zh_CN'
     - [1 到 n 路径与桥的关系](#1--n-路径与桥的关系)
 
 - [数论与位运算技巧](#数论与位运算技巧)
-  - [异或前缀性质](#异或前缀性质)
+  - [位运算内建函数](#位运算内建函数)
+  - [异或性质](#异或性质)
   - [k平方模3性质](#性质)
   - [计数某一位为1的快速方法](#计数某一位为-1-的快速方法-计算区间)   
 
@@ -165,51 +166,7 @@ int main(){
 
 # Python 随机 / 生成 / 校验工具
 
-```python
-# 对拍板子
-import os
-
-os.system("g++ -std=c++23 std.cpp -o std.exe")
-os.system("g++ -std=c++23 A.cpp -o A.exe")
-
-kase = 0
-while True:
-  os.system("python gen.py > A.in")
-  os.system("type A.in | std.exe > A.ans")
-  os.system("type A.in | A.exe > A.out")
-  if os.system("fc A.ans A.out > nul") != 0:
-    print("Wrong Answer on Case:", kase)
-    break
-
-  if kase % 100 == 0:
-    print(kase, "pass !!!")
-
-  kase = kase + 1
-```
-
-python中可以直接使用 `pow(x, k)` / `pow(x, k, mod)` ，不需要导入任何库
-
-```python
-# 简单数据生成器
-import random
-
-random.randint(l, r)
-random.choice(list)    # 随机选一个
-random.sample(list, k) # 随机不重复选k个
-random.shuffle(list)
-```
-
-```python
-# 全排列
-import itertools
-def generate_permutations(n):
-  return itertools.permutations(range(1, n + 1))
-
-for p in generate_permutations(n):
-  v = list(p)
-  if check(v):
-    print(' '.join(map(str, p)))
-```
+**扔到另一个post去了喵**
 
 ---
 
@@ -336,10 +293,23 @@ struct fenwick{ // 二维树状数组
 
 # 数论与位运算技巧
 
-## 异或前缀性质（$1 \oplus 2 \oplus \dots \oplus n$）
+## 位运算内建函数
+
+* `__lg(x)`：返回 $\lfloor \log _2 x \rfloor$ 
+* `__builtin_popcount(x)`：返回 `int` 中二进制 1 的个数
+* `__builtin_popcountll(x)`：返回 `long long` 中二进制 1 的个数
+
+**常见用法**
+
+* 判断是否为 2 的幂：`__builtin_popcount(x) == 1`
+
+
+## 异或性质
+
+> $(2k) \oplus (2k + 1) = 1$
 
 > 结论：
->
+> 
 > - 若 $n \bmod 4 = 0$，则 $1 \oplus \dots \oplus n = n$。
 > - 若 $n \bmod 4 = 1$，则 $1 \oplus \dots \oplus n = 1$。
 > - 若 $n \bmod 4 = 2$，则 $1 \oplus \dots \oplus n = n+1$。

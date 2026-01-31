@@ -159,6 +159,10 @@ $$
 ### 5.1 常见换元
 
 $$
+t = \tan\frac x 2
+$$
+
+$$
 \sin x=\frac{2t}{1+t^2},\quad
 \cos x=\frac{1-t^2}{1+t^2},\quad
 dx=\frac{2}{1+t^2}dt
