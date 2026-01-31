@@ -7,6 +7,7 @@ tags: [OI]
 category: 'OI'
 draft: false 
 lang: 'zh_CN'
+pinWeight: 10
 ---
 
 # 常用 ACM 算法竞赛笔记与模板（整理版）

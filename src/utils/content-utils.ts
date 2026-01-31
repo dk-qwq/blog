@@ -10,6 +10,12 @@ async function getRawSortedPosts() {
 	});
 
 	const sorted = allBlogPosts.sort((a, b) => {
+		const weightA = a.data.pinWeight ?? 2;
+		const weightB = b.data.pinWeight ?? 2;
+		if (weightA !== weightB) {
+			return weightA > weightB ? -1 : 1; // 置顶量大的在前面
+		}
+
 		const dateA = new Date(a.data.published);
 		const dateB = new Date(b.data.published);
 		return dateA > dateB ? -1 : 1;

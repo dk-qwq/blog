@@ -7,6 +7,7 @@ tags: [Python, OI]
 category: 'OI'
 draft: false 
 lang: ''
+pinWeight: 9
 ---
 
 ## 对拍板子
