@@ -30,3 +30,5 @@ yarn.lock
 .idea
 *.iml
 src/content/posts/draft.md
+
+.vscode/
