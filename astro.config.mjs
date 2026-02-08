@@ -99,6 +99,11 @@ export default defineConfig({
 					insHue: 120,
 					markHue: 60,
 				},
+
+				// 将折叠代码块展开后的背景设为透明
+				collapsibleSections: {
+					openBackgroundColorCollapsible: 'rgb(0, 0, 0 / 0)',
+				},
 			},
 			frames: {
 				showCopyToClipboardButton: false,
