@@ -2,18 +2,20 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
+import { on } from "node:events";
 
-// // Retrieve posts and sort them by publication date
-async function getRawSortedPosts() {
+async function getRawSortedPosts(onlySortedByDate: boolean = false) {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
 
 	const sorted = allBlogPosts.sort((a, b) => {
-		const weightA = a.data.pinWeight ?? 2;
-		const weightB = b.data.pinWeight ?? 2;
-		if (weightA !== weightB) {
-			return weightA > weightB ? -1 : 1; // 置顶量大的在前面
+		if(!onlySortedByDate) {
+			const weightA = a.data.pinWeight ?? 2;
+			const weightB = b.data.pinWeight ?? 2;
+			if (weightA !== weightB) {
+				return weightA > weightB ? -1 : 1; // 置顶量大的在前面
+			}
 		}
 
 		const dateA = new Date(a.data.published);
@@ -23,6 +25,7 @@ async function getRawSortedPosts() {
 	return sorted;
 }
 
+// 文章展示页 [...page]
 export async function getSortedPosts() {
 	const sorted = await getRawSortedPosts();
 
@@ -37,12 +40,14 @@ export async function getSortedPosts() {
 
 	return sorted;
 }
+
+// 为归档页准备的列表
 export type PostForList = {
 	slug: string;
 	data: CollectionEntry<"posts">["data"];
 };
 export async function getSortedPostsList(): Promise<PostForList[]> {
-	const sortedFullPosts = await getRawSortedPosts();
+	const sortedFullPosts = await getRawSortedPosts(true);
 
 	// delete post.body
 	const sortedPostsList = sortedFullPosts.map((post) => ({

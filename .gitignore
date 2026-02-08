@@ -5,7 +5,7 @@ dist/
 .astro/
 
 # dependencies
-node_modules/
+node_modules
 
 # logs
 npm-debug.log*
@@ -32,3 +32,4 @@ yarn.lock
 src/content/posts/draft.md
 
 .vscode/
+.frontmatter/

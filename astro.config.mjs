@@ -67,6 +67,11 @@ export default defineConfig({
 			],
 			defaultProps: {
 				wrap: true,
+
+				// 关闭 行号 以及 frame 以减少视觉干扰
+				showLineNumbers: false,
+				frame: "none",
+
 				overridesByLang: {
 					shellsession: {
 						showLineNumbers: false,
