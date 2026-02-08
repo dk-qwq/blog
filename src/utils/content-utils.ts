@@ -10,7 +10,7 @@ async function getRawSortedPosts(onlySortedByDate: boolean = false) {
 	});
 
 	const sorted = allBlogPosts.sort((a, b) => {
-		if(!onlySortedByDate) {
+		if (!onlySortedByDate) {
 			const weightA = a.data.pinWeight ?? 2;
 			const weightB = b.data.pinWeight ?? 2;
 			if (weightA !== weightB) {
