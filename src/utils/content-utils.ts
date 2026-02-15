@@ -1,10 +1,10 @@
 import { type CollectionEntry, getCollection } from "astro:content";
+import { on } from "node:events";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
-import { on } from "node:events";
 
-async function getRawSortedPosts(onlySortedByDate: boolean = false) {
+async function getRawSortedPosts(onlySortedByDate = false) {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});

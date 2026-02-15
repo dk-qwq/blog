@@ -18,6 +18,7 @@ pinWeight: 10
 
 - [环境与 IO](#环境与-io)
   - [标准输入 输出 重定向](#标准输入--输出-重定向)
+  - [C++ 输出固定小数位](#c-输出固定小数位)
 
 - [常用模板与输入加速](#常用模板与输入加速)
   - [Template](#template)
@@ -28,6 +29,7 @@ pinWeight: 10
 - [数据结构 DSU BIT multiset fenwick](#数据结构-dsu--bit--multiset--fenwick)
   - [差分与前缀和技巧](#差分与前缀和技巧)
     - [区间覆盖次数最大值](#区间覆盖次数最大值)
+    - [二次差分：区间加 等差数列](#二次差分区间加-等差数列)
   - [带权并查集](#带权并查集)
   - [二维树状数组 fenwick](#二维树状数组fenwick)
   - [multiset 常见用法与效率提示](#multiset-常见用法与效率提示)
@@ -39,6 +41,7 @@ pinWeight: 10
 - [数论与位运算技巧](#数论与位运算技巧)
   - [位运算内建函数](#位运算内建函数)
   - [异或性质](#异或性质)
+  - [选择型异或问题 → 线性基](#选择型异或问题--线性基)
   - [k平方模3性质](#性质)
   - [计数某一位为1的快速方法](#计数某一位为-1-的快速方法-计算区间)   
 
@@ -56,7 +59,7 @@ pinWeight: 10
   - [平板电视（pbds）](#平板电视pbds)
     - [动态第 $k$ 小](#动态第-k-小)
   - [生成下一个排列](#生成下一个排列字典序)
-  - [常用 debug 宏](#常用-debug-宏)
+  - [debug 宏](#debug-宏)
   - [unordered_map pair 哈希](#unordered_map-pair-哈希)
 
 - [常见数学结论 快查](#常见数学结论快查)
@@ -102,6 +105,16 @@ cmd /c "A.exe < in.txt > out.txt"
 # Linux / 通用
 ./A.exe < in.txt > out.txt
 ```
+
+## C++ 输出固定小数位
+
+```cpp
+cout << fixed << setprecision(2) << num << '\n';
+```
+
+**注意**
+* 若不加 `fixed`，`setprecision` 表示**有效数字位数**而非小数位数**
+
 
 ---
 
@@ -200,6 +213,24 @@ for (auto& [_, v] : c) {
     ans = max(ans, cur);
 }
 ```
+
+### 二次差分：区间加 等差数列
+
+对原数组做 **两次差分**，用 `c[]` 维护。
+
+区间 `[l,r]` 加 首项为 $a_0$, 公差为 $d$ 的等差数列：
+
+```
+c[l]     += a0
+c[l+1]   += d - a0
+c[r+1]   -= a_n + d
+c[r+2]   += a_n
+```
+
+最后对 `c` 做两次前缀和还原。
+
+> 忘公式：直接对目标序列手推两次差分反推更新点。
+
 
 ## 带权并查集
 
@@ -303,6 +334,7 @@ struct fenwick{ // 二维树状数组
 **常见用法**
 
 * 判断是否为 2 的幂：`__builtin_popcount(x) == 1`
+* 所有 `1 << x` 建议写为 `1ll << x` 防止溢出
 
 
 ## 异或性质
@@ -315,6 +347,13 @@ struct fenwick{ // 二维树状数组
 > - 若 $n \bmod 4 = 1$，则 $1 \oplus \dots \oplus n = 1$。
 > - 若 $n \bmod 4 = 2$，则 $1 \oplus \dots \oplus n = n+1$。
 > - 若 $n \bmod 4 = 3$，则 $1 \oplus \dots \oplus n = 0$。
+
+## 选择型异或问题 → 线性基
+
+**模型**
+
+* 每位可选：$c_i = a_i$ 或 $c_i = b_i$
+* 等价变形：$c_i = a_i \oplus x_i$ , $x_i \in \left\{ 0,\ a_i \oplus b_i \right\}$
 
 ## $k^2 \bmod 3$ 性质
 
@@ -481,10 +520,10 @@ bool next_permutation(iterator start, iterator end);
 
 - 复杂度：**`O(n)`**（单次）
 
-## 常用 debug 宏
+## debug 宏
 
 ```cpp
-#define debug(a) cout<<#a<<"="<<a<<endl;
+#define debug(x) cout << #x << "= " << x << endl
 ```
 
 ## unordered_map pair 哈希
