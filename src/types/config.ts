@@ -36,6 +36,7 @@ export type SiteConfig = {
 	};
 
 	favicon: Favicon[];
+	googleAnalyticsId?: string; // Google Analytics Measurement ID (e.g., 'G-XXXXXXXXXX')
 };
 
 export type Favicon = {
