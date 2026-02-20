@@ -150,7 +150,7 @@ const bannerOffset =
 		<!-- Google Analytics -->
 		{siteConfig.googleAnalyticsId && (
 			<>
-				<script async src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}></script>
+				<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}></script>
 				<script is:inline define:vars={{ googleAnalyticsId: siteConfig.googleAnalyticsId }}>
 					window.dataLayer = window.dataLayer || [];
 					function gtag(){dataLayer.push(arguments);}

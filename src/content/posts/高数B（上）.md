@@ -187,7 +187,20 @@ $$
 
 ---
 
-### 5.3 常见不定积分
+### 5.3 Wallis 公式 （点火公式）
+
+$$
+\int_{0}^{\frac \pi 2} \sin^nx dx =
+\int_{0}^{\frac \pi 2} \cos^nx dx =
+\begin{cases}
+\frac {n-1}{n} \cdot \frac {n-3} {n-2} \cdot \cdot \cdot \cdot \frac {3} {4} \cdot \frac {1} {2} \cdot \frac {\pi} {2}\text{，} &n\text{为正偶数} \\
+\frac {n-1}{n} \cdot \frac {n-3} {n-2} \cdot \cdot \cdot \cdot \frac {4} {5} \cdot \frac {2} {3} \cdot 1\text{，} &n\text{为正奇数} 
+\end{cases} 
+$$
+
+---
+
+### 5.4 常见不定积分
 
 $$
 \begin{aligned}
