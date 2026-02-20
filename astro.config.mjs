@@ -27,7 +27,7 @@ import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://dk-qwq.github.io",
+  site: process.env.SITE_URL || "https://dk-qwq.github.io",
   base: "/blog",
   trailingSlash: "always",
 
