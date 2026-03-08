@@ -94,8 +94,8 @@ pinWeight: 2
 
 ## git clone
 
-克隆仓库
-`git clone <url>`
+克隆仓库 / 克隆 n 层历史
+`git clone [--depth <N>] <url>`
 
 ---
 

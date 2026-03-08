@@ -74,6 +74,7 @@ pinWeight: 2
 ```bash
 git init                # 初始化一个新的 Git 仓库
 git clone <repo_url>    # 克隆一个远程仓库到本地
+git clone --depth 1 <repo_url>   # 浅克隆，只拉取最近 1 条提交历史
 ```
 
 ### 查看状态与日志
@@ -100,11 +101,12 @@ git commit --amend               # 修改上一次提交
 ### 分支操作
 
 ```bash
-git branch                      # 列出所有分支
-git branch <branch-name>        # 创建新分支
-git checkout <branch-name>      # 切换到指定分支
-git branch -d <branch-name>     # 删除分支
-git merge <branch-name>         # 合并指定分支到当前分支
+git branch                       # 列出所有分支
+git branch <branch-name>         # 创建新分支
+git checkout <branch-name>       # 切换到指定分支
+git branch -d <branch-name>      # 删除分支
+git merge <branch-name>          # 合并指定分支到当前分支
+git reset <--soft/--hard> HEAD~1 # 回退到上一个提交，--soft 保留更改，--hard 丢弃更改
 ```
 
 ### 远程仓库操作

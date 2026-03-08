@@ -89,4 +89,9 @@ print('%.4f' % a)  # 保留 4 位小数，四舍五入
 * 负无穷：`float('-inf')`
 * Python 中可参与比较、加减（但注意精度问题）
 
+## 列表输出
 
+```python
+print(' '.join(map(str, list)))
+print(*list, sep = ' ')
+```
