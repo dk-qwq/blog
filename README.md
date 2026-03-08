@@ -1,9 +1,13 @@
 ## [**🖥️ My Blog**](https://dk-qwq.github.io/blog/)
 
-| Command | Action |
-| :--------------------------- |:--------------|
-| `pnpm new-post my-first-post` | 创建一篇新文章 |
-| `pnpm dev` | Starts local dev server at `localhost:4321` |
+| Command                       | Action                                       |
+| :---------------------------- | :------------------------------------------- |
+| `pnpm new-post my-first-post` | 创建一篇新文章                               |
+| `pnpm build`                  | Build your production site to `./dist/`      |
+| `pnpm preview`                | Preview your build locally, before deploying |
+| `pnpm check`                  | Run checks for errors in your code           |
+| `pnpm format`                 | Format your code using Biome                 |
+| `pnpm precheck`               | Run pre-release checks via `pnpm validate`   |
 
 
 ---
@@ -96,9 +100,19 @@
 > | `pnpm preview`             | Preview your build locally, before deploying        |
 > | `pnpm check`               | Run checks for errors in your code                  |
 > | `pnpm format`              | Format your code using Biome                        |
+| `pnpm lint`                | Run Biome checks without modifying files            |
+| `pnpm lint:fix`            | Run Biome checks and auto-fix issues                |
+| `pnpm validate`            | Run format + lint + Astro check + build            |
+| `pnpm precheck`            | Run pre-release checks via `pnpm validate`         |
 > | `pnpm new-post <filename>` | Create a new post                                   |
 > | `pnpm astro ...`           | Run CLI commands like `astro add`, `astro check`    |
 > | `pnpm astro --help`        | Get help using the Astro CLI                        |
+
+Example:
+
+```bash
+pnpm precheck
+```
 > 
 > ## ✏️ Contributing
 > 

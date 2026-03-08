@@ -12,8 +12,12 @@
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
-    "lint": "biome check --write ./src",
-    "preinstall": "npx only-allow pnpm"
+    "lint": "biome check ./src",
+    "lint:fix": "biome check --write ./src",
+    "preinstall": "npx only-allow pnpm",
+
+    "biome:ci": "biome ci ./src --reporter=github",
+    "validate": "pnpm format && pnpm lint && pnpm check && pnpm biome:ci && pnpm build"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
