@@ -8,6 +8,7 @@
 | `pnpm check`                  | Run checks for errors in your code           |
 | `pnpm format`                 | Format your code using Biome                 |
 | `pnpm precheck`               | Run pre-release checks via `pnpm validate`   |
+| `pnpm validate`               | Run format + lint + Astro check + build         |
 
 
 ---
