@@ -1,9 +1,9 @@
 ---
-title: AT_abc440_e
+title: abc440 E 题解
 published: 2026-01-16
 description: '背包的k优解'
 image: ''
-tags: [abc题解, OI]
+tags: [题解, OI]
 category: 'abc题解'
 draft: false 
 lang: ''

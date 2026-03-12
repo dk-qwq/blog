@@ -3,7 +3,7 @@ title: 高数B（上）
 published: 2026-01-19
 description: ''
 image: ''
-tags: [数学，高数]
+tags: [数学, 高数]
 category: '高数'
 draft: false 
 lang: ''
