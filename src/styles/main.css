@@ -150,3 +150,64 @@
     }
   }
 }
+
+
+@media print {
+  /* 隐藏不需要打印的元素 */
+  #giscus-container,
+  #sidebar,
+  .navbar, 
+  .footer, 
+  #toc-wrapper,
+  .license-container,
+  .btn-card,
+  .search-panel,
+  .archive-panel,
+  .light-dark-switch {
+    display: none !important;
+  }
+  
+  /* 优化打印布局 */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+  
+  #post-container {
+    background: white !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  
+  .markdown-content {
+    max-width: 100% !important;
+  }
+  
+  /* 确保链接显示完整URL */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  /* 优化代码块显示 */
+  pre {
+    white-space: pre-wrap !important;
+    word-break: break-all;
+    border: 1px solid #ddd;
+    background: #f5f5f5 !important;
+    padding: 10px;
+    page-break-inside: avoid;
+  }
+  
+  /* 避免元素跨页断开 */
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+}
