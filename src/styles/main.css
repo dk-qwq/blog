@@ -200,6 +200,15 @@
     padding: 10px;
     page-break-inside: avoid;
   }
+
+  /* 核心：强制重置所有高亮代码文字为深色，去除内联背景 */
+  pre, 
+  pre code, 
+  pre span {
+    color: #1a1a1a !important;
+    background: transparent !important;
+    text-shadow: none !important;
+  }
   
   /* 避免元素跨页断开 */
   h1, h2, h3 {
