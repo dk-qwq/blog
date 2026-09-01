@@ -95,3 +95,7 @@ print('%.4f' % a)  # 保留 4 位小数，四舍五入
 print(' '.join(map(str, list)))
 print(*list, sep = ' ')
 ```
+
+python ord chr
+
+python from fractions import Fraction; p = Fraction(3,100)
