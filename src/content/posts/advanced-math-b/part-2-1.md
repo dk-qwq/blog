@@ -212,6 +212,12 @@ $$
 \frac{x - x_0}{f'_x} = \frac{y - y_0}{f'_y} = \frac{z - z_0}{-1}
 $$
 
+### 空间曲面的面积
+
+$$
+A = \iint_D \sqrt{1 + \left(\frac{\partial z}{\partial x}\right)^2 + \left(\frac{\partial z}{\partial y}\right)^2} \, dx dy
+$$
+
 ### 旋转变换
 
 标准 2D 逆时针旋转矩阵为：
