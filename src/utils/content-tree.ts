@@ -1,5 +1,5 @@
 import type { CollectionEntry } from "astro:content";
-import { contentCompareFn } from "./content-utils";
+import { contentCompareFn, type RankableItem } from "./content-utils";
 
 export interface ArticleNode {
 	type: "article";
@@ -16,9 +16,43 @@ export interface FolderNode {
 	path: string;
 	url: string;
 	landingArticle?: ArticleNode;
-	articles: ArticleNode[];
-	folders: FolderNode[];
+	contents: contentNode[];
+
+	// articles: ArticleNode[];
+	// folders: FolderNode[];
 }
+
+export function getFolders(contents: contentNode[]): FolderNode[] {
+	return contents.filter((content) => content.type === "folder");
+}
+
+export function getArticles(contents: contentNode[]): ArticleNode[] {
+	return contents.filter((content) => content.type === "article");
+}
+
+function pickBetterRankable(
+	a?: RankableItem,
+	b?: RankableItem,
+): RankableItem | undefined {
+	if (!a || !b) return a ?? b;
+	return contentCompareFn(a, b) <= 0 ? a : b;
+}
+
+function getRankable(content: contentNode): RankableItem | undefined {
+	if (content.type === "article") {
+		return content.entry.data;
+	}
+
+	if (content.landingArticle !== undefined) {
+		return getRankable(content.landingArticle);
+	}
+
+	return content.contents
+		?.map(getRankable)
+		.reduce<RankableItem | undefined>(pickBetterRankable, undefined);
+}
+
+export type contentNode = ArticleNode | FolderNode;
 
 export type ContentRouteTarget =
 	| {
@@ -71,7 +105,9 @@ function getOrCreateFolder(
 	name: string,
 	path: string,
 ): FolderNode {
-	const existingFolder = parent.folders.find((folder) => folder.name === name);
+	const existingFolder = getFolders(parent.contents).find(
+		(folder) => folder.name === name,
+	);
 	if (existingFolder) {
 		return existingFolder;
 	}
@@ -81,11 +117,10 @@ function getOrCreateFolder(
 		name,
 		path,
 		url: getPostUrl(path),
-		articles: [],
-		folders: [],
+		contents: [],
 	};
 
-	parent.folders.push(folder);
+	parent.contents.push(folder);
 	return folder;
 }
 
@@ -97,12 +132,8 @@ export function buildContentTree(
 		name: "",
 		path: "",
 		url: "/posts/",
-		articles: [],
-		folders: [],
+		contents: [],
 	};
-
-	// /../a/index.md /../a article
-	// /../a/_index.md /../ landing
 
 	for (const entry of posts) {
 		const sourcePath = removeMarkdownExtension(entry.id);
@@ -141,7 +172,7 @@ export function buildContentTree(
 		if (isLanding) {
 			currentFolder.landingArticle = article;
 		} else {
-			currentFolder.articles.push(article);
+			currentFolder.contents.push(article);
 		}
 	}
 
@@ -150,19 +181,17 @@ export function buildContentTree(
 	return root;
 }
 
-function sortContentTree(folder: FolderNode): void {
-	folder.articles.sort((a, b) => {
-		return contentCompareFn(a.entry, b.entry);
+function sortContentTree(folder: FolderNode, nonFix = false): void {
+	folder.contents.sort((a, b) => {
+		if (nonFix && a.type !== b.type) {
+			return a.type === "folder" ? -1 : 1;
+		}
+		// biome-ignore lint/style/noNonNullAssertion: <每个节点的目录下一定存在 article，故一定有 Rankable>
+		return contentCompareFn(getRankable(a)!, getRankable(b)!);
 	});
 
-	folder.folders.sort((a, b) => {
-		return a.name.localeCompare(b.name, undefined, {
-			numeric: true,
-		});
-	});
-
-	for (const child of folder.folders) {
-		sortContentTree(child);
+	for (const child of getFolders(folder.contents)) {
+		sortContentTree(child, nonFix);
 	}
 }
 
@@ -170,7 +199,7 @@ export function flattenFolders(root: FolderNode): FolderNode[] {
 	const result: FolderNode[] = [];
 
 	function visit(folder: FolderNode): void {
-		for (const child of folder.folders) {
+		for (const child of getFolders(folder.contents)) {
 			result.push(child);
 			visit(child);
 		}
@@ -184,15 +213,14 @@ export function flattenContentRoutes(root: FolderNode): ContentRouteTarget[] {
 	const routes: ContentRouteTarget[] = [];
 
 	function visit(folder: FolderNode): void {
-		// indexArticle 不单独生成路由，使用目录
-		for (const article of folder.articles) {
+		for (const article of getArticles(folder.contents)) {
 			routes.push({
 				type: "article",
 				node: article,
 			});
 		}
 
-		for (const child of folder.folders) {
+		for (const child of getFolders(folder.contents)) {
 			routes.push({
 				type: "folder",
 				node: child,

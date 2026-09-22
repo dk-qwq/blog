@@ -1,5 +1,6 @@
 ---
 import type { FolderNode } from "@utils/content-tree";
+import { getArticles, getFolders } from "@utils/content-tree";
 import { url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 
@@ -11,8 +12,8 @@ interface Props {
 
 const { folder, class: className, style } = Astro.props;
 
-const articleCount = folder.articles.length;
-const folderCount = folder.folders.length;
+const articleCount = getArticles(folder.contents).length;
+const folderCount = getFolders(folder.contents).length;
 
 // 有 landing article 时优先使用它的标题，否则回退到文件夹名称。
 const title = folder.landingArticle?.entry.data.title || folder.name;

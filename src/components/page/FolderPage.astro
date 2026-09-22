@@ -19,37 +19,40 @@ const interval = 50;
 
 <MainGridLayout title={title}>
 	<div class="flex flex-col gap-4 mb-4">
-		{
-			folder.folders.map((childFolder) => (
-				<FolderCard
-					folder={childFolder}
-					class="onload-animation"
-					style={`animation-delay: calc(var(--content-delay) + ${
-						delay++ * interval
-					}ms);`}
-				/>
-			))
-		}
 
 		{
-			folder.articles.map((article) => (
-				<PostCard
-					entry={article.entry}
-					title={article.entry.data.title}
-					tags={article.entry.data.tags}
-					category={article.entry.data.category}
-					published={article.entry.data.published}
-					updated={article.entry.data.updated}
-					url={getPostUrlBySlug(article.path)}
-					image={article.entry.data.image}
-					description={article.entry.data.description}
-					draft={article.entry.data.draft}
-					class="onload-animation"
-					style={`animation-delay: calc(var(--content-delay) + ${
-						delay++ * interval
-					}ms);`}
-				/>
-			))
+			folder.contents.map((content) => {
+
+				const style = `animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`;
+
+				if(content.type === "folder") {
+					return (
+						<FolderCard
+							folder={content}
+							class="onload-animation"
+							style={style}
+						/>
+					);
+				} else {
+					const { entry } = content;
+					return (
+						<PostCard
+							entry={entry}
+							title={entry.data.title}
+							tags={entry.data.tags}
+							category={entry.data.category}
+							published={entry.data.published}
+							updated={entry.data.updated}
+							url={getPostUrlBySlug(content.path)}
+							image={entry.data.image}
+							description={entry.data.description}
+							draft={entry.data.draft}
+							class="onload-animation"
+							style={style}
+						/>
+					)
+				}
+			})
 		}
 	</div>
 </MainGridLayout>

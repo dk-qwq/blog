@@ -1,10 +1,9 @@
 <script lang="ts">
+import { getPostUrlBySlug } from "@utils/url-utils";
 import { onMount } from "svelte";
-
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import type { Post } from "../types/post";
-import { getPostUrlBySlug } from "../utils/url-utils";
 
 export let tags: string[] = [];
 export let categories: string[] = [];

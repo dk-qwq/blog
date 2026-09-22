@@ -3,21 +3,26 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
+export type RankableItem = {
+	pinWeight?: number;
+	published: Date;
+};
+
 export function contentCompareFn(
-	a: CollectionEntry<"posts">,
-	b: CollectionEntry<"posts">,
+	a: RankableItem,
+	b: RankableItem,
 	onlySortedByDate = false,
 ) {
 	if (!onlySortedByDate) {
-		const weightA = a.data.pinWeight ?? 2;
-		const weightB = b.data.pinWeight ?? 2;
+		const weightA = a.pinWeight ?? 2;
+		const weightB = b.pinWeight ?? 2;
 		if (weightA !== weightB) {
 			return weightA > weightB ? -1 : 1; // 置顶量大的在前面
 		}
 	}
 
-	const dateA = new Date(a.data.published);
-	const dateB = new Date(b.data.published);
+	const dateA = new Date(a.published);
+	const dateB = new Date(b.published);
 	return dateA > dateB ? -1 : 1;
 }
 
@@ -27,7 +32,7 @@ async function getRawSortedPosts(onlySortedByDate = false) {
 	});
 
 	const sorted = allBlogPosts.sort((a, b) => {
-		return contentCompareFn(a, b, onlySortedByDate);
+		return contentCompareFn(a.data, b.data, onlySortedByDate);
 	});
 	return sorted;
 }

@@ -4,6 +4,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import { pathsEqual, url } from "@utils/url-utils";
 import { profileConfig, siteConfig } from "@/config";
 import {
 	AUTO_MODE,
@@ -17,7 +18,6 @@ import {
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
-import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
 
 interface Props {
@@ -215,8 +215,8 @@ import {
 	// SizeObserverPlugin,
 	// ClickScrollPlugin
 } from 'overlayscrollbars';
-import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
-import {pathsEqual, url} from "../utils/url-utils";
+import {getHue, getStoredTheme, setHue, setTheme} from "@utils/setting-utils";
+import {pathsEqual, url} from "@utils/url-utils";
 import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_HOME,
