@@ -121,7 +121,8 @@ export default defineConfig({
       sitemap(),
 	],
 
-  markdown: unified({
+  markdown: {
+    processor: unified({
       remarkPlugins: [
           remarkMath,
           remarkReadingTime,
@@ -171,7 +172,8 @@ export default defineConfig({
               },
           ],
       ],
-	}),
+	})
+  },
 
   vite: {
       build: {

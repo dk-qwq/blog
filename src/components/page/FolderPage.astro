@@ -1,0 +1,55 @@
+---
+import FolderCard from "@components/FolderCard.astro";
+import PostCard from "@components/PostCard.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import type { FolderNode } from "@utils/content-tree";
+import { getPostUrlBySlug } from "@utils/url-utils";
+
+interface Props {
+	folder: FolderNode;
+}
+
+const { folder } = Astro.props;
+
+const title = folder.name;
+
+let delay = 0;
+const interval = 50;
+---
+
+<MainGridLayout title={title}>
+	<div class="flex flex-col gap-4 mb-4">
+		{
+			folder.folders.map((childFolder) => (
+				<FolderCard
+					folder={childFolder}
+					class="onload-animation"
+					style={`animation-delay: calc(var(--content-delay) + ${
+						delay++ * interval
+					}ms);`}
+				/>
+			))
+		}
+
+		{
+			folder.articles.map((article) => (
+				<PostCard
+					entry={article.entry}
+					title={article.entry.data.title}
+					tags={article.entry.data.tags}
+					category={article.entry.data.category}
+					published={article.entry.data.published}
+					updated={article.entry.data.updated}
+					url={getPostUrlBySlug(article.path)}
+					image={article.entry.data.image}
+					description={article.entry.data.description}
+					draft={article.entry.data.draft}
+					class="onload-animation"
+					style={`animation-delay: calc(var(--content-delay) + ${
+						delay++ * interval
+					}ms);`}
+				/>
+			))
+		}
+	</div>
+</MainGridLayout>
