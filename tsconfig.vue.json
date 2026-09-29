@@ -1,0 +1,10 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"declaration": false,
+		"noEmit": true,
+		"types": ["astro/client"]
+	},
+	"include": [".astro/types.d.ts", "src/**/*.ts", "src/**/*.vue"],
+	"exclude": ["src/**/*.test.ts"]
+}

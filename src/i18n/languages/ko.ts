@@ -6,6 +6,12 @@ export const ko: Translation = {
 	[Key.about]: "소개",
 	[Key.archive]: "아카이브",
 	[Key.search]: "검색",
+	[Key.searchLoading]: "검색 중…",
+	[Key.searchNoResults]: "일치하는 내용이 없습니다",
+	[Key.searchUnavailable]:
+		"검색을 일시적으로 사용할 수 없습니다. 다시 시도해 주세요.",
+	[Key.menu]: "메뉴",
+	[Key.reset]: "기본값으로 재설정",
 
 	[Key.tags]: "태그",
 	[Key.categories]: "카테고리",

@@ -6,6 +6,12 @@ export const en: Translation = {
 	[Key.about]: "About",
 	[Key.archive]: "Archive",
 	[Key.search]: "Search",
+	[Key.searchLoading]: "Searching…",
+	[Key.searchNoResults]: "No matching content",
+	[Key.searchUnavailable]:
+		"Search is temporarily unavailable. Please try again.",
+	[Key.menu]: "Menu",
+	[Key.reset]: "Reset to default",
 
 	[Key.tags]: "Tags",
 	[Key.categories]: "Categories",

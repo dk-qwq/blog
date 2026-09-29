@@ -11,113 +11,138 @@ interface Props {
 }
 
 const { folder, class: className, style } = Astro.props;
-
 const articleCount = getArticles(folder.contents).length;
 const folderCount = getFolders(folder.contents).length;
-
-// 有 landing article 时优先使用它的标题，否则回退到文件夹名称。
 const title = folder.landingArticle?.entry.data.title || folder.name;
-
 const description = folder.landingArticle?.entry.data.description;
 ---
 
 <a
 	href={url(folder.url)}
-	class:list={[
-		"card-base group flex items-stretch",
-		"w-full rounded-[var(--radius-large)]",
-		"p-4 md:px-5 md:py-5",
-		"border border-black/[0.04] dark:border-white/[0.06]",
-		"hover:border-[var(--primary)]/25 hover:shadow-lg hover:shadow-black/[0.04]",
-		"transition-all duration-300 active:scale-[0.99]",
-		className,
-	]}
+	class:list={["folder-card card-base group", className]}
 	style={style}
 >
-	<div
-		class="
-			shrink-0 self-start flex items-center justify-center
-			w-11 h-11 md:w-12 md:h-12 mr-4 rounded-xl
-			bg-gradient-to-br from-[var(--enter-btn-bg)] to-[var(--card-bg)]
-			border border-[var(--primary)]/10
-			text-[var(--primary)]
-			transition-transform duration-300 group-hover:scale-105
-		"
-	>
-		<Icon
-			name="material-symbols:folder-rounded"
-			class="text-3xl"
-		/>
-	</div>
-
-	<div class="min-w-0 flex-1 py-0.5">
-		<div
-			class="
-				font-bold text-lg md:text-xl leading-7
-				text-black/90 dark:text-white/90
-				group-hover:text-[var(--primary)]
-				transition-colors truncate
-			"
-		>
-			{title}
+	<span class="folder-icon" aria-hidden="true">
+		<Icon name="material-symbols:folder-open-outline-rounded" />
+	</span>
+	<div class="min-w-0 flex-1">
+		<div class="flex items-center gap-3">
+			<h2 class="folder-title text-90">{title}</h2>
+			<span class="folder-label">目录</span>
 		</div>
-
-		{description && (
-			<div
-				class="
-					mt-1 text-sm leading-5
-					text-black/55 dark:text-white/55
-					line-clamp-2
-				"
-			>
-				{description}
-			</div>
-		)}
-
-		<div class:list={["flex flex-wrap gap-2", description ? "mt-3" : "mt-2"]}>
-			<span
-				class="
-					inline-flex items-center gap-1 rounded-md
-					bg-black/[0.035] dark:bg-white/[0.06]
-					px-2 py-1 text-xs font-medium
-					text-black/55 dark:text-white/55
-				"
-			>
-				<Icon name="material-symbols:article-outline-rounded" class="text-sm" />
-				{articleCount} 篇文章
-			</span>
-
-			<span
-				class="
-					inline-flex items-center gap-1 rounded-md
-					bg-black/[0.035] dark:bg-white/[0.06]
-					px-2 py-1 text-xs font-medium
-					text-black/55 dark:text-white/55
-				"
-			>
-				<Icon name="material-symbols:folder-outline-rounded" class="text-sm" />
-				{folderCount} 个文件夹
-			</span>
+		{description && <p class="folder-description text-50">{description}</p>}
+		<div class="folder-meta text-50">
+			{articleCount > 0 && <span>{articleCount} 篇文章</span>}
+			{articleCount > 0 && folderCount > 0 && <span aria-hidden="true">·</span>}
+			{folderCount > 0 && <span>{folderCount} 个子目录</span>}
+			{articleCount === 0 && folderCount === 0 && <span>暂无文章</span>}
 		</div>
 	</div>
-
-	<div
-		class="
-			shrink-0 self-stretch ml-4 w-10 md:w-11 min-h-14
-			flex items-center justify-center rounded-xl
-			bg-[var(--enter-btn-bg)]
-			group-hover:bg-[var(--enter-btn-bg-hover)]
-			group-active:bg-[var(--enter-btn-bg-active)]
-			transition-all duration-300
-		"
-	>
-		<Icon
-			name="material-symbols:chevron-right-rounded"
-			class="
-				text-3xl text-[var(--primary)]
-				transition-transform duration-300
-				group-hover:translate-x-0.5
-			"
-		/>
-	</div>
+	<Icon name="material-symbols:chevron-right-rounded" class="folder-arrow" aria-hidden="true" />
 </a>
+
+<style>
+	.folder-card {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+		padding: 1.5rem 1.75rem;
+		border: 1px solid var(--line-divider);
+		transition: background-color 200ms, border-color 200ms;
+	}
+
+	.folder-card:hover,
+	.folder-card:focus-visible {
+		background: var(--btn-card-bg-hover);
+		border-color: var(--primary);
+	}
+
+	.folder-card:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: -3px;
+	}
+
+	.folder-icon {
+		display: grid;
+		place-items: center;
+		flex-shrink: 0;
+		width: 3.5rem;
+		height: 3.5rem;
+		border-radius: 1rem;
+		background: var(--btn-regular-bg);
+		color: var(--btn-content);
+		font-size: 1.75rem;
+	}
+
+	.folder-title {
+		min-width: 0;
+		font-size: 1.375rem;
+		font-weight: 700;
+		line-height: 1.5;
+		overflow-wrap: anywhere;
+	}
+
+	.folder-label {
+		flex-shrink: 0;
+		color: var(--btn-content);
+		font-size: 0.6875rem;
+		letter-spacing: 0.1em;
+	}
+
+	.folder-description {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		overflow-wrap: anywhere;
+		margin-top: 0.25rem;
+		font-size: 0.875rem;
+		line-height: 1.6;
+	}
+
+	.folder-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 0.5rem;
+		font-size: 0.75rem;
+		line-height: 1.5;
+	}
+
+	.folder-arrow {
+		flex-shrink: 0;
+		color: var(--primary);
+		font-size: 1.75rem;
+		transition: transform 200ms;
+	}
+
+	.folder-card:hover .folder-arrow {
+		transform: translateX(0.25rem);
+	}
+
+	@media (max-width: 767px) {
+		.folder-card {
+			gap: 1rem;
+			padding: 1.25rem;
+		}
+		.folder-icon {
+			width: 2.75rem;
+			height: 2.75rem;
+			border-radius: 0.75rem;
+			font-size: 1.5rem;
+		}
+		.folder-title {
+			font-size: 1.125rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.folder-card,
+		.folder-arrow {
+			transition: none;
+		}
+		.folder-card:hover .folder-arrow {
+			transform: none;
+		}
+	}
+</style>

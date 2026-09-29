@@ -33,3 +33,6 @@ src/content/posts/draft.md
 
 .vscode/
 .frontmatter/
+# browser test output
+test-results/
+playwright-report/

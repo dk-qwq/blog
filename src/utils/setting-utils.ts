@@ -3,48 +3,53 @@ import {
 	DARK_MODE,
 	DEFAULT_THEME,
 	LIGHT_MODE,
-} from "@constants/constants.ts";
-import { expressiveCodeConfig } from "@/config";
+} from "@constants/constants";
+import { expressiveCodeConfig, siteConfig } from "@/config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
 
+function readPreference(key: string): string | null {
+	try {
+		return localStorage.getItem(key);
+	} catch {
+		return null;
+	}
+}
+
+function writePreference(key: string, value: string): void {
+	try {
+		localStorage.setItem(key, value);
+	} catch {
+		// Preferences still apply for this visit when browser storage is unavailable.
+	}
+}
+
 export function getDefaultHue(): number {
-	const fallback = "250";
-	const configCarrier = document.getElementById("config-carrier");
-	return Number.parseInt(configCarrier?.dataset.hue || fallback, 10);
+	return siteConfig.themeColor.hue;
 }
 
 export function getHue(): number {
-	const stored = localStorage.getItem("hue");
-	return stored ? Number.parseInt(stored, 10) : getDefaultHue();
+	const stored = readPreference("hue");
+	if (stored === null) return getDefaultHue();
+	const hue = Number(stored);
+	return Number.isFinite(hue)
+		? Math.min(360, Math.max(0, hue))
+		: getDefaultHue();
 }
 
 export function setHue(hue: number): void {
-	localStorage.setItem("hue", String(hue));
-	const r = document.querySelector(":root") as HTMLElement;
-	if (!r) {
-		return;
-	}
-	r.style.setProperty("--hue", String(hue));
+	const value = Number.isFinite(hue)
+		? Math.min(360, Math.max(0, hue))
+		: getDefaultHue();
+	writePreference("hue", String(value));
+	document.documentElement.style.setProperty("--hue", String(value));
 }
 
-export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
-	switch (theme) {
-		case LIGHT_MODE:
-			document.documentElement.classList.remove("dark");
-			break;
-		case DARK_MODE:
-			document.documentElement.classList.add("dark");
-			break;
-		case AUTO_MODE:
-			if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-				document.documentElement.classList.add("dark");
-			} else {
-				document.documentElement.classList.remove("dark");
-			}
-			break;
-	}
-
-	// Set the theme for Expressive Code
+export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
+	const isDark =
+		theme === DARK_MODE ||
+		(theme === AUTO_MODE &&
+			window.matchMedia("(prefers-color-scheme: dark)").matches);
+	document.documentElement.classList.toggle("dark", isDark);
 	document.documentElement.setAttribute(
 		"data-theme",
 		expressiveCodeConfig.theme,
@@ -52,10 +57,13 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
 }
 
 export function setTheme(theme: LIGHT_DARK_MODE): void {
-	localStorage.setItem("theme", theme);
+	writePreference("theme", theme);
 	applyThemeToDocument(theme);
 }
 
 export function getStoredTheme(): LIGHT_DARK_MODE {
-	return (localStorage.getItem("theme") as LIGHT_DARK_MODE) || DEFAULT_THEME;
+	const stored = readPreference("theme");
+	return stored === LIGHT_MODE || stored === DARK_MODE || stored === AUTO_MODE
+		? stored
+		: DEFAULT_THEME;
 }

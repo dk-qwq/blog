@@ -3,54 +3,43 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
-export type RankableItem = {
-	pinWeight?: number;
-	published: Date;
-};
+import { contentCompareFn } from "./content-order";
+import { isLandingArticle } from "./content-paths";
 
-export function contentCompareFn(
-	a: RankableItem,
-	b: RankableItem,
-	onlySortedByDate = false,
-) {
-	if (!onlySortedByDate) {
-		const weightA = a.pinWeight ?? 2;
-		const weightB = b.pinWeight ?? 2;
-		if (weightA !== weightB) {
-			return weightA > weightB ? -1 : 1; // 置顶量大的在前面
-		}
-	}
+export { contentCompareFn, type RankableItem } from "./content-order";
 
-	const dateA = new Date(a.published);
-	const dateB = new Date(b.published);
-	return dateA > dateB ? -1 : 1;
-}
-
-async function getRawSortedPosts(onlySortedByDate = false) {
+async function getRawSortedEntries(onlySortedByDate = false) {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
 
-	const sorted = allBlogPosts.sort((a, b) => {
-		return contentCompareFn(a.data, b.data, onlySortedByDate);
-	});
+	const sorted = allBlogPosts
+		.map((post) => ({ ...post, data: { ...post.data } }))
+		.sort((a, b) => {
+			return contentCompareFn(a.data, b.data, onlySortedByDate);
+		});
 	return sorted;
 }
 
-// 文章展示页 [...page]
-export async function getSortedPosts() {
-	const sorted = await getRawSortedPosts();
+// 目录树需要保留 _index 的元信息，但文章翻页只能指向真正的文章。
+export async function getSortedEntries() {
+	const sorted = await getRawSortedEntries();
+	const articles = sorted.filter((post) => !isLandingArticle(post.id));
 
-	for (let i = 1; i < sorted.length; i++) {
-		sorted[i].data.nextSlug = sorted[i - 1].id;
-		sorted[i].data.nextTitle = sorted[i - 1].data.title;
-	}
-	for (let i = 0; i < sorted.length - 1; i++) {
-		sorted[i].data.prevSlug = sorted[i + 1].id;
-		sorted[i].data.prevTitle = sorted[i + 1].data.title;
+	for (let i = 0; i < articles.length; i++) {
+		articles[i].data.nextSlug = articles[i - 1]?.id ?? "";
+		articles[i].data.nextTitle = articles[i - 1]?.data.title ?? "";
+		articles[i].data.prevSlug = articles[i + 1]?.id ?? "";
+		articles[i].data.prevTitle = articles[i + 1]?.data.title ?? "";
 	}
 
 	return sorted;
+}
+
+export async function getSortedPosts() {
+	return (await getSortedEntries()).filter(
+		(post) => !isLandingArticle(post.id),
+	);
 }
 
 // 为归档页准备的列表
@@ -59,7 +48,9 @@ export type PostForList = {
 	data: CollectionEntry<"posts">["data"];
 };
 export async function getSortedPostsList(): Promise<PostForList[]> {
-	const sortedFullPosts = await getRawSortedPosts(true);
+	const sortedFullPosts = (await getRawSortedEntries(true)).filter(
+		(post) => !isLandingArticle(post.id),
+	);
 
 	// delete post.body
 	const sortedPostsList = sortedFullPosts.map((post) => ({
@@ -75,9 +66,7 @@ export type Tag = {
 };
 
 export async function getTagList(): Promise<Tag[]> {
-	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
+	const allBlogPosts = await getSortedPosts();
 
 	const countMap: { [key: string]: number } = {};
 	allBlogPosts.forEach((post: { data: { tags: string[] } }) => {
@@ -102,9 +91,7 @@ export type Category = {
 };
 
 export async function getCategoryList(): Promise<Category[]> {
-	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
+	const allBlogPosts = await getSortedPosts();
 	const count: { [key: string]: number } = {};
 	allBlogPosts.forEach((post: { data: { category: string | null } }) => {
 		if (!post.data.category) {

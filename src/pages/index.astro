@@ -1,0 +1,9 @@
+---
+import FolderPage from "@components/page/FolderPage.astro";
+import { buildContentTree } from "@utils/content-tree";
+import { getSortedEntries } from "@utils/content-utils";
+
+const root = buildContentTree(await getSortedEntries());
+---
+
+<FolderPage folder={root} />

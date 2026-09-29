@@ -6,6 +6,12 @@ export const es: Translation = {
 	[Key.about]: "Sobre mí",
 	[Key.archive]: "Archivo",
 	[Key.search]: "Buscar",
+	[Key.searchLoading]: "Buscando…",
+	[Key.searchNoResults]: "No hay contenido coincidente",
+	[Key.searchUnavailable]:
+		"La búsqueda no está disponible. Inténtalo de nuevo.",
+	[Key.menu]: "Menú",
+	[Key.reset]: "Restablecer",
 
 	[Key.tags]: "Etiquetas",
 	[Key.categories]: "Categorías",

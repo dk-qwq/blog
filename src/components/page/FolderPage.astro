@@ -3,7 +3,9 @@ import FolderCard from "@components/FolderCard.astro";
 import PostCard from "@components/PostCard.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import type { FolderNode } from "@utils/content-tree";
-import { getPostUrlBySlug } from "@utils/url-utils";
+import { getArticles, getFolders } from "@utils/content-tree";
+import { getPostUrlBySlug, url } from "@utils/url-utils";
+import { Icon } from "astro-icon/components";
 
 interface Props {
 	folder: FolderNode;
@@ -11,14 +13,35 @@ interface Props {
 
 const { folder } = Astro.props;
 
-const title = folder.name;
+const title = folder.landingArticle?.entry.data.title || folder.name;
+const description = folder.landingArticle?.entry.data.description;
+const articleCount = getArticles(folder.contents).length;
+const folderCount = getFolders(folder.contents).length;
+const parentPath = folder.path.split("/").slice(0, -1).join("/");
+const parentUrl = parentPath ? getPostUrlBySlug(parentPath) : url("/");
 
 let delay = 0;
 const interval = 50;
 ---
 
-<MainGridLayout title={title}>
-	<div class="flex flex-col gap-4 mb-4">
+<MainGridLayout title={title} description={description}>
+	<header class="px-6 pt-2 pb-5 md:px-9">
+		{folder.path && (
+			<a href={parentUrl} class="mb-3 inline-flex items-center gap-1 text-sm text-50 hover:text-[var(--primary)]">
+				<Icon name="material-symbols:arrow-back-rounded" aria-hidden="true" />
+				返回上级
+			</a>
+		)}
+		<div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+			<h1 class="text-2xl font-bold text-90 break-words min-w-0">{title || "文章与目录"}</h1>
+			<p class="text-sm text-50">
+				{folderCount > 0 && <span>{folderCount} 个目录 · </span>}
+				{articleCount} 篇文章
+			</p>
+		</div>
+		{description && <p class="mt-2 text-sm leading-relaxed text-50">{description}</p>}
+	</header>
+	<div class="content-list flex flex-col gap-4 mb-4">
 
 		{
 			folder.contents.map((content) => {

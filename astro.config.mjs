@@ -1,7 +1,6 @@
 import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
-import svelte from "@astrojs/svelte";
-import tailwind from "@astrojs/tailwind";
+import vue from "@astrojs/vue";
 import vercel from "@astrojs/vercel";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
@@ -32,9 +31,6 @@ export default defineConfig({
   trailingSlash: "always",
 
   integrations: [
-      tailwind({
-          nesting: true,
-      }),
       swup({
           theme: false,
           animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
@@ -51,7 +47,6 @@ export default defineConfig({
       }),
       icon({
           include: {
-              "preprocess: vitePreprocess(),": ["*"],
               "fa6-brands": ["*"],
               "fa6-regular": ["*"],
               "fa6-solid": ["*"],
@@ -117,7 +112,7 @@ export default defineConfig({
               showCopyToClipboardButton: false,
           },
       }),
-      svelte(),
+      vue(),
       sitemap(),
 	],
 

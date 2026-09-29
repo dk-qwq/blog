@@ -6,10 +6,10 @@ import {
 	type ContentRouteTarget,
 	flattenContentRoutes,
 } from "@utils/content-tree";
-import { getSortedPosts } from "@utils/content-utils";
+import { getSortedEntries } from "@utils/content-utils";
 
 export async function getStaticPaths() {
-	const blogEntries = await getSortedPosts();
+	const blogEntries = await getSortedEntries();
 	const root = buildContentTree(blogEntries);
 	const targets = flattenContentRoutes(root);
 

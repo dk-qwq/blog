@@ -6,6 +6,12 @@ export const tr: Translation = {
 	[Key.about]: "Hakkında",
 	[Key.archive]: "Arşiv",
 	[Key.search]: "Ara",
+	[Key.searchLoading]: "Aranıyor…",
+	[Key.searchNoResults]: "Eşleşen içerik yok",
+	[Key.searchUnavailable]:
+		"Arama geçici olarak kullanılamıyor. Lütfen tekrar deneyin.",
+	[Key.menu]: "Menü",
+	[Key.reset]: "Varsayılana sıfırla",
 
 	[Key.tags]: "Taglar",
 	[Key.categories]: "Katagoriler",

@@ -1,5 +1,18 @@
 import type { CollectionEntry } from "astro:content";
-import { contentCompareFn, type RankableItem } from "./content-utils";
+import { contentCompareFn, type RankableItem } from "./content-order";
+import {
+	getArticlePath,
+	getPostUrl,
+	isIndexArticle,
+	isLandingArticle,
+} from "./content-paths";
+
+export {
+	getArticlePath,
+	getPostUrl,
+	isIndexArticle,
+	isLandingArticle,
+} from "./content-paths";
 
 export interface ArticleNode {
 	type: "article";
@@ -64,42 +77,6 @@ export type ContentRouteTarget =
 			node: FolderNode;
 	  };
 
-function removeMarkdownExtension(id: string): string {
-	return id.replace(/\.(md|mdx)$/, "");
-}
-
-export function getArticlePath(id: string): string {
-	const path = removeMarkdownExtension(id);
-
-	if (path === "index") {
-		return "";
-	}
-
-	if (path.endsWith("/index")) {
-		return path.slice(0, -"/index".length);
-	}
-
-	if (path.endsWith("/_index")) {
-		return path.slice(0, -"/_index".length);
-	}
-
-	return path;
-}
-
-export function isIndexArticle(id: string): boolean {
-	const path = removeMarkdownExtension(id);
-	return path === "index" || path.endsWith("/index");
-}
-
-export function isLandingArticle(id: string): boolean {
-	const path = removeMarkdownExtension(id);
-	return path === "_index" || path.endsWith("/_index");
-}
-
-export function getPostUrl(path: string): string {
-	return path ? `/posts/${path}/` : "/posts/";
-}
-
 function getOrCreateFolder(
 	parent: FolderNode,
 	name: string,
@@ -136,7 +113,7 @@ export function buildContentTree(
 	};
 
 	for (const entry of posts) {
-		const sourcePath = removeMarkdownExtension(entry.id);
+		const sourcePath = entry.id.replace(/\.(md|mdx)$/, "");
 		const articlePath = getArticlePath(entry.id);
 
 		const isIndex = isIndexArticle(entry.id);

@@ -58,7 +58,7 @@ describe("path helpers", () => {
 	it("maps index and nested _index files to directory paths", () => {
 		expect(getArticlePath("index.md")).toBe("");
 		expect(getArticlePath("math/index.md")).toBe("math");
-		expect(getArticlePath("_index.mdx")).toBe("_index");
+		expect(getArticlePath("_index.mdx")).toBe("");
 		expect(getArticlePath("math/_index.mdx")).toBe("math");
 	});
 

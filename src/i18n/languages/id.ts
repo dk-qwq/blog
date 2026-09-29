@@ -6,6 +6,12 @@ export const id: Translation = {
 	[Key.about]: "Tentang",
 	[Key.archive]: "Arsip",
 	[Key.search]: "Cari",
+	[Key.searchLoading]: "Mencari…",
+	[Key.searchNoResults]: "Tidak ada konten yang cocok",
+	[Key.searchUnavailable]:
+		"Pencarian sementara tidak tersedia. Silakan coba lagi.",
+	[Key.menu]: "Menu",
+	[Key.reset]: "Atur ulang",
 
 	[Key.tags]: "Tag",
 	[Key.categories]: "Kategori",

@@ -200,16 +200,10 @@ class TableOfContents extends HTMLElement {
         return min < value && value < max;
     };
 
+    initFrame = 0;
+
     connectedCallback() {
-        // wait for the onload animation to finish, which makes the `getBoundingClientRect` return correct values
-        const element = document.querySelector('.prose');
-        if (element) {
-            element.addEventListener('animationend', () => {
-                this.init();
-            }, { once: true });
-        } else {
-            console.debug('Animation element not found');
-        }
+        this.initFrame = requestAnimationFrame(() => this.init());
     };
 
     init() {
@@ -254,6 +248,8 @@ class TableOfContents extends HTMLElement {
     };
 
     disconnectedCallback() {
+        cancelAnimationFrame(this.initFrame);
+        this.tocEl?.removeEventListener("click", this.handleAnchorClick, true);
         this.sections.forEach((section) =>
             this.observer.unobserve(section)
         );
