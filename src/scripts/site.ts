@@ -7,6 +7,8 @@ import {
 	BANNER_HEIGHT_HOME,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "@constants/constants";
+import type Swup from "@swup/astro/client/Swup";
+import type SwupScrollPlugin from "@swup/astro/client/SwupScrollPlugin";
 import {
 	applyThemeToDocument,
 	getHue,
@@ -21,6 +23,55 @@ import { siteConfig } from "@/config";
 let cleanupPage: (() => void) | undefined;
 let transitionTimer: ReturnType<typeof setTimeout> | undefined;
 const copyTimers = new Map<HTMLButtonElement, ReturnType<typeof setTimeout>>();
+const configuredNavigation = new WeakSet<Swup>();
+
+function waitForStylesheet(link: HTMLLinkElement): Promise<void> {
+	if (link.sheet) return Promise.resolve();
+	return new Promise((resolve) => {
+		const controller = new AbortController();
+		const finish = () => {
+			clearTimeout(timer);
+			controller.abort();
+			resolve();
+		};
+		// A failed stylesheet must not leave navigation waiting indefinitely.
+		const timer = setTimeout(finish, 3000);
+		link.addEventListener("load", finish, { signal: controller.signal });
+		link.addEventListener("error", finish, { signal: controller.signal });
+	});
+}
+
+function configureAnchorNavigation(): void {
+	const swup = (window as Window & { swup?: Swup }).swup;
+	if (!swup || configuredNavigation.has(swup)) return;
+	configuredNavigation.add(swup);
+	const scrolling = swup.findPlugin("SwupScrollPlugin") as
+		| SwupScrollPlugin
+		| undefined;
+	if (scrolling) {
+		scrolling.options.offset = (element) =>
+			Number.parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
+	}
+	swup.hooks.before("content:scroll", async (visit) => {
+		if (!visit.to.hash) return;
+		// Code styles can live inside the replaced article. On narrow screens,
+		// loading them or their fonts changes wrapping and moves later headings.
+		await Promise.all(
+			[
+				...document.querySelectorAll<HTMLLinkElement>(
+					'main link[rel="stylesheet"]',
+				),
+			].map(waitForStylesheet),
+		);
+		await document.fonts.ready;
+	});
+}
+
+// The Astro integration publishes window.swup immediately after enabling it.
+document.addEventListener("swup:enable", () => {
+	queueMicrotask(configureAnchorNavigation);
+});
+configureAnchorNavigation();
 
 function updateViewport(): void {
 	const offset = Math.floor((window.innerHeight * BANNER_HEIGHT_EXTEND) / 100);

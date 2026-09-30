@@ -1,5 +1,6 @@
 ---
-import { getSortedPostsList } from "@utils/content-utils";
+import { render } from "astro:content";
+import { getSortedPosts } from "@utils/content-utils";
 import { getPostUrlBySlug, url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { navBarConfig, siteConfig } from "../config";
@@ -18,12 +19,23 @@ const links: NavBarLink[] = navBarConfig.links.map(
 	},
 );
 const searchEntries = import.meta.env.DEV
-	? (await getSortedPostsList()).map((post) => ({
-			url: getPostUrlBySlug(post.slug),
-			title: post.data.title,
-			description: post.data.description,
-			tags: post.data.tags,
-		}))
+	? await Promise.all(
+			(await getSortedPosts()).map(async (post) => {
+				const postUrl = getPostUrlBySlug(post.id);
+				const { headings } = await render(post);
+				return {
+					url: postUrl,
+					title: post.data.title,
+					description: post.data.description,
+					tags: post.data.tags,
+					sections: headings.map((heading) => ({
+						url: `${postUrl}#${encodeURIComponent(heading.slug)}`,
+						// The heading renderer appends a permalink marker to its text.
+						title: heading.text.replace(/#$/, ""),
+					})),
+				};
+			}),
+		)
 	: [];
 ---
 <div id="navbar" class="z-50 onload-animation">

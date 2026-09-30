@@ -189,7 +189,9 @@ test("production search loads the real index and clears obsolete results", async
 		isMobile ? "#search-panel input" : "#search-bar input",
 	);
 	await input.fill("Kitamasa");
-	const result = page.locator('#search-panel a[href*="kitamasa"]');
+	const result = page.locator(
+		'#search-panel a[href="/blog/posts/kitamasa_bm_notes/"]',
+	);
 	await expect(result).toBeVisible();
 	await input.fill("");
 	await expect(page.locator("#search-panel a")).toHaveCount(0);
@@ -202,6 +204,124 @@ test("production search loads the real index and clears obsolete results", async
 	await result.click();
 	await expect(page).toHaveURL(/kitamasa_bm_notes/);
 	await expect(page.locator("#post-container")).toBeVisible();
+});
+
+test("search removes the native focus outline and dismisses empty desktop results", async ({
+	page,
+	isMobile,
+}) => {
+	await page.goto("");
+	await ready(page);
+	if (isMobile) await page.locator("#search-switch").click();
+	const input = page.locator(
+		isMobile ? "#search-panel input" : "#search-bar input",
+	);
+	await input.click();
+	await expect(input).toHaveCSS("outline-color", "rgba(0, 0, 0, 0)");
+	await input.fill("SOS DP");
+	await expect(
+		page.locator('#search-panel a[href="/blog/posts/misc-templates/#sos-dp"]'),
+	).toBeVisible();
+	await input.press("ControlOrMeta+A");
+	await input.press("Backspace");
+	await expect(page.locator("#search-panel a")).toHaveCount(0);
+	await expect(page.locator("#search-panel [role=status]")).toHaveCount(0);
+	if (isMobile) {
+		await expect(page.locator("#search-panel")).not.toHaveAttribute("inert");
+		await expect(input).toBeFocused();
+	} else {
+		await expect(page.locator("#search-panel")).toHaveAttribute("inert");
+		await expect(page.locator("#search-panel")).toHaveCSS("opacity", "0");
+		await expect(input).toHaveAttribute("aria-expanded", "false");
+		await input.fill("   ");
+		await expect(page.locator("#search-panel")).toHaveAttribute("inert");
+	}
+	await input.fill("SOS DP");
+	await expect(
+		page.locator('#search-panel a[href="/blog/posts/misc-templates/#sos-dp"]'),
+	).toBeVisible();
+});
+
+test("search links to matching sections across pages and within the current article", async ({
+	page,
+	isMobile,
+}) => {
+	// First-visit code styles arrive after the HTML and can change mobile wrapping.
+	await page.route("**/ec.*.css", async (route) => {
+		await new Promise((resolve) => setTimeout(resolve, 300));
+		await route.continue();
+	});
+	await page.goto("");
+	await ready(page);
+	await page.evaluate(() => {
+		document.documentElement.dataset.navigationMarker = "search-sections";
+	});
+	if (isMobile) await page.locator("#search-switch").click();
+	const input = page.locator(
+		isMobile ? "#search-panel input" : "#search-bar input",
+	);
+	await input.fill("SOS DP");
+	const section = page.locator(
+		'#search-panel a[href="/blog/posts/misc-templates/#sos-dp"]',
+	);
+	await expect(section).toHaveAccessibleName("来点神秘板子 → SOS DP");
+	await expect(section.locator("mark").first()).toBeVisible();
+	await section.click();
+	await expect(page).toHaveURL(/\/misc-templates\/#sos-dp$/);
+	await expect(page.locator("#search-panel")).toHaveAttribute("inert");
+	await expect(page.locator("#sos-dp")).toBeInViewport();
+	await expect(page.locator("html")).toHaveAttribute(
+		"data-navigation-marker",
+		"search-sections",
+	);
+	await expect(page.locator("html")).not.toHaveClass(/\bis-changing\b/);
+	await expect(page.locator("#sos-dp")).toBeInViewport({ ratio: 1 });
+
+	// The navbar survives Swup navigation; a new search must also handle same-page anchors.
+	if (isMobile) await page.locator("#search-switch").click();
+	await input.fill("FenwickTree2D");
+	await page
+		.locator(
+			'#search-panel a[href="/blog/posts/misc-templates/#fenwicktree2d"]',
+		)
+		.click();
+	await expect(page).toHaveURL(/\/misc-templates\/#fenwicktree2d$/);
+	await expect(page.locator("#fenwicktree2d")).toBeInViewport();
+	await expect(page.locator("#search-panel")).toHaveAttribute("inert");
+	await expect(page.locator("html")).toHaveAttribute(
+		"data-navigation-marker",
+		"search-sections",
+	);
+});
+
+test("search preserves Chinese section anchors and supports keyboard activation", async ({
+	page,
+	isMobile,
+}) => {
+	await page.goto("");
+	await ready(page);
+	if (isMobile) await page.locator("#search-switch").click();
+	const input = page.locator(
+		isMobile ? "#search-panel input" : "#search-bar input",
+	);
+	await input.fill("角动量守恒定理");
+	const section = page
+		.locator("#search-panel .search-section")
+		.filter({ hasText: "角动量守恒定理" })
+		.first();
+	await expect(section).toBeVisible();
+	const href = await section.getAttribute("href");
+	expect(href).toBeTruthy();
+	await section.focus();
+	await page.keyboard.press("Enter");
+	await expect(page).toHaveURL(
+		new URL(href ?? "", "http://127.0.0.1:4322").href,
+	);
+	const headingId = decodeURIComponent(
+		new URL(href ?? "", "http://127.0.0.1:4322").hash.slice(1),
+	);
+	await expect(page.locator(`[id="${headingId}"]`)).toBeInViewport();
+	await expect(page.locator("#search-panel")).toHaveAttribute("inert");
 });
 
 test("archive filters update across navigation and browser history", async ({

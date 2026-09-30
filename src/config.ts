@@ -76,6 +76,11 @@ export const profileConfig: ProfileConfig = {
 			icon: "fa6-brands:github",
 			url: "https://github.com/dk-qwq",
 		},
+		{
+			name: "Email",
+			icon: "fa6-regular:envelope",
+			url: "mailto:dk2510814177@gmail.com",
+		},
 	],
 };
 

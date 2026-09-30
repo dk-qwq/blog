@@ -1,7 +1,14 @@
+export interface SearchSection {
+	url: string;
+	title: string;
+	excerpt: string;
+}
+
 export interface SearchResult {
 	url: string;
 	meta: { title: string };
 	excerpt: string;
+	sub_results?: SearchSection[];
 }
 
 export interface SearchEntry {
@@ -9,6 +16,7 @@ export interface SearchEntry {
 	title: string;
 	description: string;
 	tags: string[];
+	sections?: Array<{ url: string; title: string }>;
 }
 
 export interface Pagefind {
