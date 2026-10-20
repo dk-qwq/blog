@@ -22,9 +22,9 @@
     "test:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.10",
     "@astrojs/rss": "^4.0.19",
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/sitemap": "^3.7.4",
     "@astrojs/vercel": "^10.0.8",
     "@astrojs/vue": "6.0.1",
     "@expressive-code/core": "^0.44.2",
@@ -35,7 +35,7 @@
     "@iconify-json/fa6-brands": "^1.2.6",
     "@iconify-json/fa6-regular": "^1.2.4",
     "@iconify-json/fa6-solid": "^1.2.4",
-    "@iconify-json/material-symbols": "^1.2.85",
+    "@iconify-json/material-symbols": "^1.2.95",
     "@swup/astro": "^1.8.0",
     "@tailwindcss/typography": "^0.5.20",
     "astro": "6.4.8",
@@ -66,19 +66,19 @@
     "remark-rehype": "^11.1.2",
     "remark-sectionize": "^2.1.0",
     "sanitize-html": "^2.17.6",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.5",
     "stylus": "^0.64.0",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
-    "vue": "^3.5.24",
+    "vue": "^3.5.44",
     "yaml": "^2.9.1"
   },
   "devDependencies": {
-    "@astrojs/markdown-remark": "^7.3.1",
-    "@astrojs/ts-plugin": "^1.10.10",
-    "@biomejs/biome": "2.5.4",
+    "@astrojs/markdown-remark": "^7.3.3",
+    "@astrojs/ts-plugin": "^1.10.12",
+    "@biomejs/biome": "2.5.15",
     "@playwright/test": "^1.58.0",
     "@rollup/plugin-yaml": "^4.1.2",
     "@types/hast": "^3.0.5",
@@ -86,11 +86,11 @@
     "@types/mdast": "^4.0.4",
     "@types/sanitize-html": "^2.16.1",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
+    "postcss": "^8.5.30",
     "postcss-import": "^16.1.1",
     "postcss-nesting": "^13.0.2",
-    "vitest": "^5.0.1",
-    "vue-tsc": "^3.1.0"
+    "vitest": "^5.0.5",
+    "vue-tsc": "^3.3.13"
   },
   "packageManager": "pnpm@11.23.0"
 }
