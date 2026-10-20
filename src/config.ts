@@ -4,6 +4,7 @@ import type {
 	NavBarConfig,
 	ProfileConfig,
 	SiteConfig,
+	ToolLink,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
 
@@ -52,6 +53,15 @@ export const navBarConfig: NavBarConfig = {
 		},
 	],
 };
+
+export const toolLinks: ToolLink[] = [
+	{
+		name: "Markdown 转 PDF",
+		url: "/tools/markdown-pdf/",
+		description: "编辑、预览并打印",
+		icon: "document",
+	},
+];
 
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/qqavatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'

@@ -3,7 +3,7 @@ import { render } from "astro:content";
 import { getSortedPosts } from "@utils/content-utils";
 import { getPostUrlBySlug, url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
-import { navBarConfig, siteConfig } from "../config";
+import { navBarConfig, siteConfig, toolLinks } from "../config";
 import { LinkPresets } from "../constants/link-presets";
 import { LinkPreset, type NavBarLink } from "../types/config";
 import NavbarControls from "./NavbarControls.vue";
@@ -49,10 +49,10 @@ const searchEntries = import.meta.env.DEV
                 {siteConfig.title}
             </div>
         </a>
-        <div class="hidden md:flex">
+        <div class="navbar-links hidden lg:flex shrink-0">
             {links.map((l) => {
                 return <a aria-label={l.name} href={l.external ? l.url : url(l.url)} target={l.external ? "_blank" : null}
-                          class="btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95"
+                          class="btn-plain scale-animation rounded-lg h-11 font-bold px-3 xl:px-5 whitespace-nowrap shrink-0 active:scale-95"
                 >
                     <div class="flex items-center">
                         {l.name}
@@ -61,6 +61,6 @@ const searchEntries = import.meta.env.DEV
                 </a>;
             })}
         </div>
-        <NavbarControls links={links} fixedThemeColor={siteConfig.themeColor.fixed} searchEntries={searchEntries} client:load />
+        <NavbarControls links={links} tools={toolLinks} fixedThemeColor={siteConfig.themeColor.fixed} searchEntries={searchEntries} client:load />
     </div>
 </div>

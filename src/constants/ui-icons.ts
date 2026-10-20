@@ -1,6 +1,11 @@
 // Iconify subset: Material Symbols (Apache-2.0), Font Awesome Free (CC BY 4.0).
 // Kept local so navigation icons render in HTML without browser API requests.
 export const uiIcons = {
+	document: {
+		width: 24,
+		height: 24,
+		body: '<g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></g>',
+	},
 	search: {
 		width: 24,
 		height: 24,

@@ -41,6 +41,60 @@ async function ready(page: Page): Promise<void> {
 	await expect(page.locator("#navbar astro-island:not([ssr])")).toHaveCount(1);
 }
 
+test("navigation text fits its background at tablet widths and with search focused", async ({
+	page,
+}) => {
+	for (const width of [320, 768, 820, 1024]) {
+		await page.setViewportSize({ width, height: 900 });
+		await page.goto("tools/markdown-pdf/");
+		await ready(page);
+		if (width < 1024) {
+			await expect(page.locator(".navbar-links")).toBeHidden();
+			await page.locator("#nav-menu-switch").click();
+			await expect(
+				page.locator(
+					'#nav-menu-panel .mobile-tools a[href="/blog/tools/markdown-pdf/"]',
+				),
+			).toBeVisible();
+			await expect(page.locator("#mobile-tools-title")).toHaveText("小工具");
+			await page.keyboard.press("Escape");
+		} else {
+			await expect(page.locator(".navbar-links")).toBeVisible();
+			await expect(page.locator("#nav-menu-switch")).toBeHidden();
+			await page.locator("#search-bar input").focus();
+			await expect(page.locator("#search-bar input")).toHaveCSS(
+				"width",
+				"240px",
+			);
+		}
+		const clipped = await page.evaluate(() => {
+			return [
+				...document.querySelectorAll("#navbar .card-base > a, .navbar-links a"),
+			]
+				.filter((element) => element.getBoundingClientRect().width > 0)
+				.filter((element) => {
+					const range = document.createRange();
+					range.selectNodeContents(element);
+					const text = range.getBoundingClientRect();
+					const box = element.getBoundingClientRect();
+					return (
+						text.left < box.left - 1 ||
+						text.right > box.right + 1 ||
+						text.top < box.top - 1 ||
+						text.bottom > box.bottom + 1
+					);
+				})
+				.map((element) => element.textContent?.trim());
+		});
+		expect(clipped, `Clipped navigation labels at ${width}px`).toEqual([]);
+		expect(
+			await page.evaluate(
+				() => document.documentElement.scrollWidth - innerWidth,
+			),
+		).toBeLessThanOrEqual(1);
+	}
+});
+
 test("home and posts share the directory view without index article cards", async ({
 	page,
 }) => {
@@ -102,7 +156,7 @@ test("archives omit directory metadata", async ({ page, request }) => {
 	);
 });
 
-test("archive and navigation are rendered in the initial HTML", async ({
+test("archive, navigation and tool entries are rendered in the initial HTML", async ({
 	request,
 }) => {
 	const response = await request.get("archive/");
@@ -111,6 +165,18 @@ test("archive and navigation are rendered in the initial HTML", async ({
 	expect(html).toContain('id="archive-panel"');
 	expect(html).toContain("dkdk-上分日记");
 	expect(html).toContain('id="scheme-switch"');
+	const desktopTools = html.match(
+		/<section\b[^>]*id="tools-widget"[^>]*>[\s\S]*?<\/section>/,
+	)?.[0];
+	const mobileTools = html.match(
+		/<section\b[^>]*aria-labelledby="mobile-tools-title"[^>]*>[\s\S]*?<\/section>/,
+	)?.[0];
+	for (const entry of [desktopTools, mobileTools]) {
+		expect(entry).toBeDefined();
+		expect(entry).toContain("小工具");
+		expect(entry).toContain("Markdown 转 PDF");
+		expect(entry).toContain('href="/blog/tools/markdown-pdf/"');
+	}
 	expect(html).not.toContain("@astrojs/svelte");
 });
 

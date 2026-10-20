@@ -1,0 +1,20 @@
+---
+import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/jetbrains-mono/wght-italic.css";
+import MarkdownPdfTool from "../../components/MarkdownPdfTool.vue";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+---
+<MainGridLayout title="Markdown 转 PDF" description="左侧编辑 Markdown，右侧自动预览，使用博客样式打印为 PDF。">
+    <MarkdownPdfTool client:load />
+    <noscript><p class="p-6">请启用 JavaScript，以便在浏览器中编辑和预览 Markdown。</p></noscript>
+</MainGridLayout>
+
+<style>
+/* Keep the shared layout for Swup; let the tool occupy its full width. */
+:global(body:has(.pdf-tool) .main-layout-shell) { max-width: 112rem; }
+:global(body:has(.pdf-tool) #main-grid) { grid-template-columns: minmax(0, 1fr); }
+:global(body:has(.pdf-tool) #swup-container) { grid-column: 1 / -1; }
+:global(body:has(.pdf-tool) #sidebar),
+:global(body:has(.pdf-tool) .footer),
+:global(body:has(.pdf-tool) #toc-wrapper) { display: none !important; }
+</style>

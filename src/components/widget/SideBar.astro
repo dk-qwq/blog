@@ -5,6 +5,7 @@ import ImageWrapper from "../misc/ImageWrapper.astro";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
 import Tag from "./Tags.astro";
+import Tools from "./Tools.astro";
 
 interface Props {
 	class?: string;
@@ -18,6 +19,8 @@ const config = profileConfig;
     <div class="flex flex-col w-full gap-4 mb-4">
         <Profile></Profile>
     </div>
+
+    <Tools class="onload-animation mb-4" style="animation-delay: 100ms" />
 
     {config.badgeGif && (
         <div class="card-base p-3 onload-animation mb-4" style="animation-delay: 100ms">

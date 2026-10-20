@@ -1,0 +1,41 @@
+---
+import { url } from "@utils/url-utils";
+import { toolLinks } from "../../config";
+import Icon from "../control/Icon.vue";
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const { class: className, style } = Astro.props;
+---
+
+{toolLinks.length > 0 && (
+  <section id="tools-widget" aria-labelledby="tools-widget-title" class:list={["card-base tools-widget", className]} style={style}>
+    <h2 id="tools-widget-title" class="text-90">小工具</h2>
+    {toolLinks.map((tool) => (
+      <a href={tool.external ? tool.url : url(tool.url)} aria-label={tool.name} target={tool.external ? "_blank" : undefined} rel={tool.external ? "noopener noreferrer" : undefined}>
+        <span class="tool-icon"><Icon name={tool.icon} /></span>
+        <span class="tool-copy">
+          <span class="tool-name text-90">{tool.name}</span>
+          <span class="tool-description text-50">{tool.description}</span>
+        </span>
+        <Icon name={tool.external ? "external" : "chevron"} class="tool-arrow" />
+      </a>
+    ))}
+  </section>
+)}
+
+<style>
+.tools-widget { padding: 1rem .85rem .85rem; }
+h2 { display: flex; align-items: center; gap: .75rem; margin: 0 .15rem .65rem; font-size: 1.125rem; font-weight: 700; line-height: 1.5; }
+h2::before { content: ""; display: block; width: 4px; height: 16px; border-radius: 4px; background: var(--primary); }
+a { display: flex; align-items: center; gap: .65rem; padding: .65rem .35rem; text-decoration: none; border-radius: .65rem; }
+a:hover { background: var(--btn-plain-bg-hover); }
+a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.tool-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 36px; height: 39px; border-radius: .6rem; color: var(--btn-content); background: var(--btn-regular-bg); font-size: 21px; }
+.tool-copy { flex: 1; min-width: 0; }
+.tool-name { display: block; font-size: .875rem; font-weight: 650; line-height: 1.6; }
+.tool-description { display: block; font-size: .73rem; line-height: 1.65; margin-top: .12rem; }
+.tool-arrow { flex-shrink: 0; color: var(--primary); font-size: 17px; }
+</style>

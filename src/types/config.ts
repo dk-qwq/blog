@@ -1,4 +1,5 @@
 import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
+import type { UiIconName } from "@constants/ui-icons";
 
 export type SiteConfig = {
 	title: string;
@@ -59,6 +60,11 @@ export type NavBarLink = {
 
 export type NavBarConfig = {
 	links: (NavBarLink | LinkPreset)[];
+};
+
+export type ToolLink = NavBarLink & {
+	description: string;
+	icon: UiIconName;
 };
 
 export type ProfileConfig = {
